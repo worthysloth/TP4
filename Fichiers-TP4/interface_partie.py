@@ -2,7 +2,7 @@
 TODO: Ce fichier présente une ébauche d'interface pour le TP4. Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
-from tkinter import Tk, Frame, Button
+from tkinter import Tk, Frame, Button, messagebox
 from tableau import Tableau
 from bouton_case import BoutonCase
 
@@ -23,7 +23,11 @@ class InterfacePartie(Tk):
         bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie', command=self.nouvelle_partie)
         bouton_nouvelle_partie.grid(row=0, column=0)
 
-        bouton_quitter = Button(bouton_frame, text="Quitter", command=self.quit)
+        #J'ai essayé le yexnocancel du site https://docs.python.org/3/library/tkinter.messagebox.html#module-tkinter.messagebox
+        bouton_quitter = Tk.messagebox.askyernocancel(Bouton_frame, title = sexybox, message = coucou, **options)
+        
+        #C'est la ligne d'origine sauf la partie command qui est changé pour appoeler ma fonction plus bas
+        #bouton_quitter = Button(bouton_frame, text="Quitter", command=self.bouton_quitter2) 
         bouton_quitter.grid(row=0, column=1)
 
         self.cadre = Frame(self)
@@ -51,5 +55,28 @@ class InterfacePartie(Tk):
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
+
+
+    """ def bouton_quitter2(self):
+        Auteur: David
+        
+        Note:
+            Fonction pour définir le bouton quitter
+
+        Args:
+            Inconnue
+
+        Returns:
+            None
+        
+        #bouton_quitter = Button(bouton_frame, text="Quitter", command=self.bouton_quitter2)
+        #bouton_quitter2.grid(row=0, column=1)
+
+        MsgBox = Tk.messagebox.askquestion ("Quittez l'application","VOulez-vous vraiment quitter le jeu super trop cool wow",icon = "warning")
+        if MsgBox == "yes":
+            root.destroy()
+        else:
+            Tk.messagebox.showinfo("Annuler","Bubye") """
+           
 
 
