@@ -1,5 +1,6 @@
 """
-TODO: Ce fichier présente une ébauche d'interface pour le TP4. Vous pouvez le modifier à souhait.
+TODO: Ce fichier présente une ébauche d'interface pour le TP4. 
+Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
@@ -21,10 +22,12 @@ class InterfacePartie(Tk):
         bouton_frame = Frame(self)
         bouton_frame.grid()
 
-        bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie', command=self.nouvelle_partie)
+        bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie',\
+             command=self.nouvelle_partie)
         bouton_nouvelle_partie.grid(row=0, column=0)
 
-        bouton_quitter = Button(bouton_frame, text="Quitter", command=self.demander_ouinon)
+        bouton_quitter = Button(bouton_frame, text="Quitter", \
+            command=self.demander_ouinon)
         bouton_quitter.grid(row=0, column=1)
         
         entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
@@ -46,7 +49,8 @@ class InterfacePartie(Tk):
 
     def devoiler_case(self, event):
         bouton = event.widget
-        case = self.tableau_mines.obtenir_case(bouton.rangee_x, bouton.colonne_y)
+        case = self.tableau_mines.obtenir_case\
+            (bouton.rangee_x, bouton.colonne_y)
         if case.est_minee:
             bouton['text'] = "M"
         else:
@@ -70,7 +74,8 @@ class InterfacePartie(Tk):
         Returns:
             None
         """
-        question = messagebox.askyesno(title = "Quitter", message = "Voulez-vous vraiment quitter ? Genre tes sur de ta shot ?")
+        question = messagebox.askyesno(title = "Quitter", message = \
+            "Voulez-vous vraiment quitter ?")
         if question == True:
             self.destroy()
            
