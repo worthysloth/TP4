@@ -2,18 +2,23 @@
 TODO: Ce fichier présente une ébauche d'interface pour le TP4. Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
-from tkinter import Tk, Frame, Button
+
+from tkinter import Tk, Frame, Button, messagebox
 from tableau import Tableau
 from bouton_case import BoutonCase
+
 
 
 class InterfacePartie(Tk):
     def __init__(self):
         super().__init__()
+        
 
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0,0)
+
+        
 
         self.tableau_mines = Tableau()
 
@@ -23,7 +28,7 @@ class InterfacePartie(Tk):
         bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie', command=self.nouvelle_partie)
         bouton_nouvelle_partie.grid(row=0, column=0)
 
-        bouton_quitter = Button(bouton_frame, text="Quitter", command=self.quit)
+        bouton_quitter = Button(bouton_frame, text="Quitter", command=self.demander_ouinon)
         bouton_quitter.grid(row=0, column=1)
 
         self.cadre = Frame(self)
@@ -37,6 +42,7 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
+      
 
     def devoiler_case(self, event):
         bouton = event.widget
@@ -51,5 +57,22 @@ class InterfacePartie(Tk):
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
+
+    def demander_ouinon(self):
+        """Auteur: David
+        
+        Note:
+            Demande à l'utilisateur s'il veut vraiment quitter le jeu
+
+        Args:
+            Inconnue
+
+        Returns:
+            None
+        """
+        question = messagebox.askyesno(title = "Quitter", message = "Voulez-vous vraiment quitter ? Genre tes sur de ta shot ?")
+        if question == True:
+            self.destroy()
+           
 
 
