@@ -3,7 +3,7 @@ TODO: Ce fichier présente une ébauche d'interface pour le TP4. Vous pouvez le 
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox
+from tkinter import Tk, Frame, Button, messagebox, Entry
 from tableau import Tableau
 from bouton_case import BoutonCase
 
@@ -11,16 +11,12 @@ from bouton_case import BoutonCase
 
 class InterfacePartie(Tk):
     def __init__(self):
-        super().__init__()
+        super().__init__() # Comme root = Tk() !!
         
-
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0,0)
 
-        
-
-        self.tableau_mines = Tableau()
 
         bouton_frame = Frame(self)
         bouton_frame.grid()
@@ -30,11 +26,16 @@ class InterfacePartie(Tk):
 
         bouton_quitter = Button(bouton_frame, text="Quitter", command=self.demander_ouinon)
         bouton_quitter.grid(row=0, column=1)
+        
+        entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
+        entree_nb_colonnes = Entry(bouton_frame, width=10).grid(row=1, column=1)
+        entree_nb_mines = Entry(bouton_frame, width=10).grid(row=1, column=2)
 
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
 
         self.dictionnaire_boutons = {}
+        self.tableau_mines = Tableau()    
 
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -42,7 +43,6 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-      
 
     def devoiler_case(self, event):
         bouton = event.widget
@@ -74,5 +74,3 @@ class InterfacePartie(Tk):
         if question == True:
             self.destroy()
            
-
-
