@@ -34,7 +34,7 @@ class Tableau():
             (x, y), x étant le numéro de la rangée, y étant le numéro de la 
             colonne. Les éléments sont des objets de la classe Case.
     """
-    def __init__(self,dimension_rangee=5, dimension_colonne=5, nombre_mines=5):
+    def __init__(self,dimension_rangee=5, dimension_colonne=5, nombre_mines=2):
         """ Initialisation d'un objet tableau.
         
         Attributes:

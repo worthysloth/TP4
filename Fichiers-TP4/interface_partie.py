@@ -46,7 +46,7 @@ class InterfacePartie(Tk):
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
       
-        
+    #test3 = afficher_solution    
     def devoiler_case(self, event):
         bouton = event.widget
         case = self.tableau_mines.obtenir_case\
@@ -55,10 +55,12 @@ class InterfacePartie(Tk):
             bouton['text'] = "M"
             #buttonerror = Button(command=self.victoire_defaite)
             #answer = messagebox.askyesno(title="Lost", message= "ta perdu")
-            answer = messagebox.askyesno(title="Lost", message= "ta perdu", command=self.test2)
+            messagebox.askyesno(title="Lost", message= "ta perdu", command=self.tableau_mines.afficher_solution())
             #if answer == True:
             #    self.afficher_solution
-            #Not able to call the function afficher_solution
+            #afficher_solition fonctionne mais juste dans CMD
+        elif self.tableau_mines.nombre_cases_sans_mine_a_devoiler == 0:
+            print ("patate")        
         else:
             bouton['text'] = case.nombre_mines_voisines
 
