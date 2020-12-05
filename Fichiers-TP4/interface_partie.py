@@ -46,15 +46,33 @@ class InterfacePartie(Tk):
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
       
-
+        
     def devoiler_case(self, event):
         bouton = event.widget
         case = self.tableau_mines.obtenir_case\
             (bouton.rangee_x, bouton.colonne_y)
         if case.est_minee:
             bouton['text'] = "M"
+            #buttonerror = Button(command=self.victoire_defaite)
+            #answer = messagebox.askyesno(title="Lost", message= "ta perdu")
+            answer = messagebox.askyesno(title="Lost", message= "ta perdu", command=self.test2)
+            #if answer == True:
+            #    self.afficher_solution
+            #Not able to call the function afficher_solution
         else:
             bouton['text'] = case.nombre_mines_voisines
+
+    def test2(self):
+        print ("patete")
+
+
+
+    """ def victoire_defaite(self):
+        if self.devoiler_case == True:
+            print("patate")
+            messagebox.showerror(title="Lost", message= "ta perdu") """
+
+
 
     def nouvelle_partie(self):
         self.tableau_mines = Tableau()
