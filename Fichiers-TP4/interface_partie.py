@@ -48,6 +48,12 @@ class InterfacePartie(Tk):
       
     #test3 = afficher_solution    
     def devoiler_case(self, event):
+        """
+        NE FONCTIONNE PAS BIEN. LA SOLUTION S'AFFICHE DANS CMD ET NON TKINTER ET IL NE DÉTECTE PAS QUE LA GAME EST TERMINÉ
+
+        Args:
+            event ([type]): [description]
+        """
         bouton = event.widget
         case = self.tableau_mines.obtenir_case\
             (bouton.rangee_x, bouton.colonne_y)
@@ -59,7 +65,7 @@ class InterfacePartie(Tk):
             #if answer == True:
             #    self.afficher_solution
             #afficher_solition fonctionne mais juste dans CMD
-        elif self.tableau_mines.nombre_cases_sans_mine_a_devoiler == 0:
+        elif self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0:
             print ("patate")        
         else:
             bouton['text'] = case.nombre_mines_voisines
