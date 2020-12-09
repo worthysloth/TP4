@@ -4,9 +4,14 @@ Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox, Entry
+from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label
 from tableau import Tableau
 from bouton_case import BoutonCase
+
+
+import time
+
+from random import randrange
 
 
 
@@ -19,6 +24,8 @@ class InterfacePartie(Tk):
         self.resizable(0,0)
 
 
+        
+        
         bouton_frame = Frame(self)
         bouton_frame.grid()
 
@@ -46,7 +53,43 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-      
+        
+
+        ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
+        self.label = Label(self, text="Timer", width=10)
+        self.label.grid()
+        self.remaining = 0
+        self.countdown(5000)
+
+    def countdown(self, remaining = None):
+        """
+        Fonction pour le mode "contre-la-montre" qui affiche la solution 
+        si jamais l'utilisateur ne termine pas avant le temps impartie
+
+
+        Args:
+            remaining ([type], optional): [description]. Defaults to None.
+
+        A faire:
+        -S'assurer que la solution s'affiche dans tkinter et non CMD
+        -replacer le timer quelque part de nice
+        -Proposer au user de choisir ce mode 
+        """
+        if remaining is not None:
+            self.remaining = remaining
+
+        if self.remaining <= 0:
+            self.label.configure(text="Temps écoulé")
+            self.tableau_mines.afficher_solution()
+        else:
+            self.label.configure(text="%d" % self.remaining)
+            self.remaining = self.remaining - 1
+            self.after(1000, self.countdown)
+
+
+
+
+
     #test3 = afficher_solution    
     def devoiler_case(self, event):
         """
@@ -71,21 +114,29 @@ class InterfacePartie(Tk):
         else:
             bouton['text'] = case.nombre_mines_voisines
 
+    def devoiler_case_quimarchepas(self, event):
+        bouton = event.widget
+        case = self.tableau_mines.obtenir_case\
+            (bouton.rangee_x, bouton.colonne_y)
+        for i in self.tableau_mines.dimension_rangee:
+            for j in self.tableau_mines.dimension_colonne:
+                case = self.obtenir_case(i+1, j+1)
+                bouton = self.dictionnaire_boutons[(i+1, j+1)]
+                if case.est_minee:
+                    bouton['text'] = "M"
+                else:
+                    bouton['text'] = "A"
+
+
     def test2(self):
         print ("patete")
 
 
 
-    """ def victoire_defaite(self):
-        if self.devoiler_case == True:
-            print("patate")
-            messagebox.showerror(title="Lost", message= "ta perdu") """
-
-
 
     def nouvelle_partie(self):
         self.tableau_mines = Tableau()
-
+        
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
 
@@ -105,4 +156,3 @@ class InterfacePartie(Tk):
             "Voulez-vous vraiment quitter ?")
         if question == True:
             self.destroy()
-           

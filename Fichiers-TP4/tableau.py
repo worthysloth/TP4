@@ -319,7 +319,7 @@ class Tableau():
 
                     #Si la case n'est pas dévoilee         
                     else:
-                        car = '◼︎'
+                        car = '◼'
                                         
                 # Afficher le caractère suivit d'un espace (sans retour de 
                 # ligne)
