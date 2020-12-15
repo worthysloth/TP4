@@ -7,6 +7,7 @@ N'oubliez pas de commenter le code!
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label
 from tableau import Tableau
 from bouton_case import BoutonCase
+import os
 
 
 import time
@@ -111,7 +112,18 @@ class InterfacePartie(Tk):
             bouton.rangee_x, bouton.colonne_y)
 
         if case.est_minee:
-            bouton['text'] = "M"
+            
+            print(os.path.dirname(__file__))
+            valo = os.path.dirname(__file__)
+            kiki = os.path.join(valo, 'images\\bomb2.png')
+            
+            ima = PhotoImage(file = kiki)
+            
+            bouton['image'] = ima
+            bouton['height'] = ima.height()
+            bouton['width'] = ima.width()
+            
+            
             if messagebox.askyesno(title="Lost", message="Ta perdu, voulez-vous recommencez?", command=self.afficher_solution()):
                 self.nouvelle_partie()
             else:
