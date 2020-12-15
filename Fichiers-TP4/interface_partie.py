@@ -33,6 +33,10 @@ class InterfacePartie(Tk):
                                 command=self.demander_ouinon)
         bouton_quitter.grid(row=0, column=1)
 
+        # Bouton info
+        bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
+        bouton_info.grid(row=0, column=2)
+
         entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
         entree_nb_colonnes = Entry(
             bouton_frame, width=10).grid(row=1, column=1)
@@ -52,12 +56,21 @@ class InterfacePartie(Tk):
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
+        #Code pour compteur de tour
+        self.tour = 0
+        self.compteur_tour()
+
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
         self.label.grid()
         self.remaining = 0
         self.countdown(5000)
-        print(self.tableau_mines.nombre_cases_sans_mine_a_devoiler)
+
+    def compteur_tour(self):
+        phrase = f"Tour#{self.tour}"
+        self.labeltour = Label(self, text= phrase, width=10)
+        self.labeltour.grid(row=10)
+        self.tour += 1
 
     def countdown(self, remaining=None):
         """
@@ -113,6 +126,7 @@ class InterfacePartie(Tk):
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print("patate")
             messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
+        self.compteur_tour()
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
@@ -150,3 +164,17 @@ class InterfacePartie(Tk):
             title="Quitter", message="Voulez-vous vraiment quitter ?")
         if question == True:
             self.destroy()
+
+    def afficher_intructions(self):
+        """Auteur: Aryanne
+
+        Note:
+            Affiche les instructions du jeu
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+        messagebox.showinfo(title= 'Info', message= 'This is how u play')
