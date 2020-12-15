@@ -99,7 +99,11 @@ class InterfacePartie(Tk):
 
         if case.est_minee:
             bouton['text'] = "M"
-            messagebox.askyesno(title="Lost", message="Ta perdu", command=self.afficher_solution())
+            if messagebox.askyesno(title="Lost", message="Ta perdu, voulez-vous recommencez?", command=self.afficher_solution()):
+                self.nouvelle_partie()
+            else:
+                self.quit()
+                
             self.defaite = True
         elif not case.est_minee:
             bouton['text'] = case.nombre_mines_voisines
