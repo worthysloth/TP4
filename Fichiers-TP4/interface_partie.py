@@ -40,6 +40,7 @@ class InterfacePartie(Tk):
 
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
+        self.defaite = False
 
         self.dictionnaire_boutons = {}
         self.tableau_mines = Tableau()
@@ -56,6 +57,7 @@ class InterfacePartie(Tk):
         self.label.grid()
         self.remaining = 0
         self.countdown(5000)
+        print(self.tableau_mines.nombre_cases_sans_mine_a_devoiler)
 
     def countdown(self, remaining=None):
         """
@@ -94,41 +96,30 @@ class InterfacePartie(Tk):
         bouton = event.widget
         case = self.tableau_mines.obtenir_case(
             bouton.rangee_x, bouton.colonne_y)
+
         if case.est_minee:
             bouton['text'] = "M"
-            self.afficher_solution()
-            #messagebox.askyesno(title="Lost", message= "ta perdu", command=self.tableau_mines.afficher_solution())
-
-        elif self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0:
-            print("patate")
-
-        else:
+            messagebox.askyesno(title="Lost", message="Ta perdu", command=self.afficher_solution())
+            self.defaite = True
+        elif not case.est_minee:
             bouton['text'] = case.nombre_mines_voisines
+            self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+            self.defaite = False
+
+        if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
+            print("patate")
+            messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
-                case.devoiler = True
                 self.tableau_mines.devoiler_case(i+1, j+1)
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
-                if not case.est_minee:
-                    bout['text'] = case.nombre_mines_voisines
-                # else:
-                #     bout['text'] = 'M'
-
-    def devoiler_case_quimarchepas(self, event):
-        bouton = event.widget
-        case = self.tableau_mines.obtenir_case(
-            bouton.rangee_x, bouton.colonne_y)
-        for i in self.tableau_mines.dimension_rangee:
-            for j in self.tableau_mines.dimension_colonne:
-                case = self.obtenir_case(i+1, j+1)
-                bouton = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
-                    bouton['text'] = "M"
+                    bout['text'] = 'M'
                 else:
-                    bouton['text'] = "A"
+                    bout['text'] = case.nombre_mines_voisines
 
     def test2(self):
         print("patete")
