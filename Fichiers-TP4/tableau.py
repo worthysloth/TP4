@@ -34,7 +34,7 @@ class Tableau():
             (x, y), x étant le numéro de la rangée, y étant le numéro de la 
             colonne. Les éléments sont des objets de la classe Case.
     """
-    def __init__(self,dimension_rangee=5, dimension_colonne=5, nombre_mines=2):
+    def __init__(self,dimension_rangee=3, dimension_colonne=3, nombre_mines=1):
         """ Initialisation d'un objet tableau.
         
         Attributes:
@@ -238,7 +238,7 @@ class Tableau():
         else:
             return False
         
-    def afficher_solution(self):
+    def afficher_solution2(self):
         """
         Méthode qui affiche le tableau de la solution à l'écran. La solution
         montre les mines pour les cases qui en contiennent et la valeur du
@@ -454,7 +454,7 @@ if __name__ == '__main__':
     print('\nTABLEAU:')
     tableau_test.afficher_tableau()
     print('\nSOLUTION:')   
-    tableau_test.afficher_solution()
+    tableau_test.afficher_solution2()
     print('Tests unitaires...')
     test_initialisation()
     test_valider_coordonnees()
