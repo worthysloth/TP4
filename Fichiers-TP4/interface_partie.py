@@ -147,6 +147,8 @@ class InterfacePartie(Tk):
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
+        self.tour = 0
+        self.compteur_tour()
 
     def demander_ouinon(self):
         """Auteur: David
@@ -154,7 +156,7 @@ class InterfacePartie(Tk):
         Note:
             Demande à l'utilisateur s'il veut vraiment quitter le jeu
 
-        Args:
+        Args
             Inconnue
 
         Returns:
