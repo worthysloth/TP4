@@ -66,7 +66,19 @@ class InterfacePartie(Tk):
         self.label.grid()
         self.remaining = 0
         self.countdown(5000)
+        
+        #reeeeeeeeeeeeee
+        self.nombres = []
+        
+        for i in range(0, 8):
+            lien = os.path.dirname(__file__)
+            autre_lien = os.path.join(lien, 'images\\tile_'+str(i)+'.png')
+            
+            nbr = PhotoImage(file = autre_lien)
+            
+            self.nombres.append(nbr)
 
+            
     def compteur_tour(self):
         phrase = f"Tour#{self.tour}"
         self.labeltour = Label(self, text= phrase, width=10)
@@ -113,7 +125,7 @@ class InterfacePartie(Tk):
 
         if case.est_minee:
             
-            print(os.path.dirname(__file__))
+            #print(os.path.dirname(__file__))
             valo = os.path.dirname(__file__)
             kiki = os.path.join(valo, 'images\\bomb2.png')
             
@@ -147,9 +159,17 @@ class InterfacePartie(Tk):
                 self.tableau_mines.devoiler_case(i+1, j+1)
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
-                    bout['text'] = 'M'
+                    valo = os.path.dirname(__file__)
+                    kiki = os.path.join(valo, 'images\\bomb2.png')
+            
+                    ima = PhotoImage(file = kiki)
+                    
+                    bout['image'] = ima
+                    bout['height'] = ima.height()
+                    bout['width'] = ima.width()
                 else:
-                    bout['text'] = case.nombre_mines_voisines
+                    nombre_a_afficher = case.nombre_mines_voisines
+                    bout['text'] = self.nombres[nombre_a_afficher]
 
     def test2(self):
         print("patete")
