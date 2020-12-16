@@ -37,32 +37,40 @@ class InterfacePartie(Tk):
 
         ## On crée ensuite les différents menus
         menu_partie = Menu(barre_menu, tearoff=0)
-        menu_partie.add_command(label="Configurer la partie", command = self.configurer_partie)
         menu_partie.add_command(label="Nouvelle partie", command=self.nouvelle_partie)
         menu_partie.add_command(label="Charger une partie", command=self.charger_partie)
         menu_partie.add_command(label="Sauvegarde la partie", command=self.sauvegarde_partie)
+        menu_partie.add_command(label="Configurer la partie", command = self.configurer_partie)
+        menu_partie.add_separator()
+        menu_partie.add_command(label="Quitter", command=self.demander_ouinon)
+
+        menu_info = Menu(barre_menu, tearoff=0)
+        menu_info.add_command(label="Règlements", command=self.afficher_intructions)
+        menu_info.add_command(label="Créateurs", command=self.afficher_createurs)
+
 
         ## On ajoue les menus a barre_menu
         barre_menu.add_cascade(label="Partie", menu = menu_partie)
+        barre_menu.add_cascade(label="Info", menu = menu_info)
 
         ## On place la barre_menu avec config parce qu'on utilise grid (peut pas faire barre_menu.grid())
         self.configure(menu=barre_menu)
          ## Fin Du Bloc qui ajoute un menu ======================================================================
 
-        bouton_frame = Frame(self)
-        bouton_frame.grid()
+        # bouton_frame = Frame(self)
+        # bouton_frame.grid()
 
-        bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie',
-                                        command=self.nouvelle_partie)
-        bouton_nouvelle_partie.grid(row=0, column=0)
+        # bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie',
+        #                                 command=self.nouvelle_partie)
+        # bouton_nouvelle_partie.grid(row=0, column=0)
 
-        bouton_quitter = Button(bouton_frame, text="Quitter",
-                                command=self.demander_ouinon)
-        bouton_quitter.grid(row=0, column=1)
+        # bouton_quitter = Button(bouton_frame, text="Quitter",
+        #                         command=self.demander_ouinon)
+        # bouton_quitter.grid(row=0, column=1)
 
         # Bouton info
-        bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
-        bouton_info.grid(row=0, column=2)     
+        # bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
+        # bouton_info.grid(row=0, column=2)     
         
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
@@ -115,27 +123,28 @@ class InterfacePartie(Tk):
         bouton = event.widget
         case = self.tableau_mines.obtenir_case(
             bouton.rangee_x, bouton.colonne_y)
-
-        if case.est_minee:
-            case.devoiler()
-            bouton['text'] = "M"
-            if messagebox.askyesno(title="Lost", message="Ta perdu, voulez-vous recommencez?", command=self.afficher_solution()):
-                self.nouvelle_partie()
-            else:
-                self.quit()
-                
-            self.defaite = True
-        elif not case.est_minee:
-            case.devoiler()
-            bouton['text'] = case.nombre_mines_voisines
-            bouton['fg'] = 'red' ## Changer couleur 
-            self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-            self.defaite = False
+        if not case.est_devoilee:
+            self.compteur_tour()
+            if case.est_minee:
+                case.devoiler()
+                bouton['text'] = "M"
+                if messagebox.askyesno(title="Lost", message="Ta perdu, cliques pour continuer."):
+                    self.afficher_solution()
+                else:
+                    self.quit()
+                    
+                self.defaite = True
+            elif not case.est_minee:
+                case.devoiler()
+                bouton['text'] = case.nombre_mines_voisines
+                bouton['fg'] = 'red' ## Changer couleur 
+                self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+                self.defaite = False
 
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print("patate")
             messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
-        self.compteur_tour()
+        
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
@@ -274,15 +283,22 @@ class InterfacePartie(Tk):
             json.dump(donnees, fichier_sauvegarde)
 
     def charger_partie(self):
+        self.cadre.destroy()
+        self.cadre = Frame(self)
+        self.cadre.grid(padx=10, pady=10)
+
         with open("fichier_sauvegarde.txt", "r") as fichier_sauvegarde:
             donnees = json.load(fichier_sauvegarde)
         
         self.nombre_rangees_partie = donnees['rangees'] ## Refactoring a faire ici!
         self.nombre_colonnes_partie = donnees['colonnes'] ## Refactoring a faire ici!
         self.nombre_mines_partie = donnees['mines'] ## Refactoring a faire ici!
-        self.tour = donnees['tours']
+        self.tour = donnees['tours'] - 1
 
         self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie,self.nombre_mines_partie)
+        self.countdown(5000)
+        self.compteur_tour()
+
 
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -295,7 +311,11 @@ class InterfacePartie(Tk):
                 case.est_devoilee = donnees['tableau'][f"({i+1}, {j+1})"]['devoilee']
                 case.nombre_mines_voisines = donnees['tableau'][f"({i+1}, {j+1})"]['nombre_voisins']
                 if case.est_devoilee:
+                    self.tableau_mines.devoiler_case(i+1, j+1)
                     if case.est_minee:
                         bouton['text'] = "M"
                     else:
                         bouton['text'] = case.nombre_mines_voisines
+
+    def afficher_createurs(self):
+        print("Aryanne Pommerleau, David Côté, Alex Caissy")
