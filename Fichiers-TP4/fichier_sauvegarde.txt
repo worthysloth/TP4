@@ -1,1 +1,1 @@
-{"rangees": 5, "colonnes": 5, "mines": 5}
+{"rangees": 5, "colonnes": 5, "mines": 5, "tours": 3}

@@ -39,7 +39,7 @@ class InterfacePartie(Tk):
         menu_partie = Menu(barre_menu, tearoff=0)
         menu_partie.add_command(label="Configurer la partie", command = self.configurer_partie)
         menu_partie.add_command(label="Nouvelle partie", command=self.nouvelle_partie)
-        menu_partie.add_command(label="Charger une partie")
+        menu_partie.add_command(label="Charger une partie", command=self.charger_partie)
         menu_partie.add_command(label="Sauvegarde la partie", command=self.sauvegarde_partie)
 
         ## On ajoue les menus a barre_menu
@@ -62,20 +62,7 @@ class InterfacePartie(Tk):
 
         # Bouton info
         bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
-        bouton_info.grid(row=0, column=2)
-
-
-        # self.dictionnaire_boutons = {}
-        # self.tableau_mines = Tableau(self.nombre_rangees_partie,self.nombre_colonnes_partie,self.nombre_mines_partie)
-
-        # for i in range(self.tableau_mines.dimension_rangee):
-        #     for j in range(self.tableau_mines.dimension_colonne):
-        #         bouton = BoutonCase(self.cadre, i+1, j+1)
-        #         bouton.grid(row=i, column=j)
-        #         bouton.bind('<Button-1>', self.devoiler_case)
-        #         self.dictionnaire_boutons[(i+1, j+1)] = bouton
-
-        
+        bouton_info.grid(row=0, column=2)     
         
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
@@ -85,7 +72,6 @@ class InterfacePartie(Tk):
 
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
-
 
     def compteur_tour(self):
         phrase = f"Tour#{self.tour}"
@@ -249,11 +235,6 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
 
-        # self.nombre_rangees_partie = entry_rangee.get()
-        # self.nombre_colonnes_partie = entry_colonne.get()
-        # self.nombre_mines_partie = entry_mine.get()
-        # self.nouvelle_partie()
-
         ## Le lamba permet de passer une commande aves des arguments:
             ## A Implementer:
                 #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
@@ -270,5 +251,23 @@ class InterfacePartie(Tk):
         donnees['rangees'] = self.nombre_rangees_partie
         donnees['colonnes'] = self.nombre_colonnes_partie
         donnees['mines'] = self.nombre_mines_partie
+        donnees['tours'] = self.tour
         with open("fichier_sauvegarde.txt", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
+
+    def charger_partie(self):
+        with open("fichier_sauvegarde.txt", "r") as fichier_sauvegarde:
+            donnees = json.load(fichier_sauvegarde)
+        
+        self.nombre_rangees_partie = donnees['rangees']
+        self.nombre_colonnes_partie = donnees['colonnes']
+        self.nombre_mines_partie = donnees['mines']
+        self.tour = donnees['tours']
+        self.nouvelle_partie() ## Je sais pas encoire quoi mais on veut juste restaurer les stats avec la boucle suivante : 
+            # for i in range(self.tableau_mines.dimension_rangee):
+            # for j in range(self.tableau_mines.dimension_colonne):
+            #     bouton = BoutonCase(self.cadre, i+1, j+1)
+            #     bouton.grid(row=i, column=j)
+            #     bouton.bind('<Button-1>', self.devoiler_case)
+            #     self.dictionnaire_boutons[(i+1, j+1)] = bouton
+        print(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie, self.tour)
