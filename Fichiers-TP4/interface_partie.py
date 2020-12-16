@@ -158,7 +158,7 @@ class InterfacePartie(Tk):
         self.cadre.destroy()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
-        print(self.dictionnaire_boutons)
+
         self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie)
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -166,7 +166,7 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-        print(self.dictionnaire_boutons)
+
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
@@ -243,7 +243,6 @@ class InterfacePartie(Tk):
                 #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
             self.maj_donnees(int(entry_rangee.get()), int(entry_colonne.get()), int(entry_mine.get())),
-            print(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie),
             fenetre.destroy(),
             self.nouvelle_partie()
         ])
@@ -256,12 +255,20 @@ class InterfacePartie(Tk):
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
         donnees['tableau'] = {}
-        for numero_case, case in enumerate(self.tableau_mines.dictionnaire_cases.values()):
-            donnees['tableau'][numero_case + 1] = {
+        # for numero_case, case in enumerate(self.tableau_mines.dictionnaire_cases.values()):
+        #     donnees['tableau'][numero_case] = {
+        #         "minee": case.est_minee,
+        #         "devoilee":case.est_devoilee,
+        #         "nombre_voisins":case.nombre_mines_voisines
+        #     }
+        for i in range(self.tableau_mines.dimension_rangee):
+            for j in range(self.tableau_mines.dimension_colonne):
+                case = self.tableau_mines.obtenir_case(i+1, j+1)
+                donnees['tableau'][f"({i+1}, {j+1})"] = {
                 "minee": case.est_minee,
                 "devoilee":case.est_devoilee,
                 "nombre_voisins":case.nombre_mines_voisines
-            }
+                }
 
         with open("fichier_sauvegarde.txt", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
@@ -270,19 +277,25 @@ class InterfacePartie(Tk):
         with open("fichier_sauvegarde.txt", "r") as fichier_sauvegarde:
             donnees = json.load(fichier_sauvegarde)
         
-        self.nombre_rangees_partie = donnees['rangees']
-        self.nombre_colonnes_partie = donnees['colonnes']
-        self.nombre_mines_partie = donnees['mines']
+        self.nombre_rangees_partie = donnees['rangees'] ## Refactoring a faire ici!
+        self.nombre_colonnes_partie = donnees['colonnes'] ## Refactoring a faire ici!
+        self.nombre_mines_partie = donnees['mines'] ## Refactoring a faire ici!
         self.tour = donnees['tours']
-       
 
+        self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie,self.nombre_mines_partie)
 
-
-        self.nouvelle_partie() ## Je sais pas encoire quoi mais on veut juste restaurer les stats avec la boucle suivante : 
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-        print(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie, self.tour)
+                case = self.tableau_mines.obtenir_case(i+1, j+1)
+                case.est_minee = donnees['tableau'][f"({i+1}, {j+1})"]['minee']
+                case.est_devoilee = donnees['tableau'][f"({i+1}, {j+1})"]['devoilee']
+                case.nombre_mines_voisines = donnees['tableau'][f"({i+1}, {j+1})"]['nombre_voisins']
+                if case.est_devoilee:
+                    if case.est_minee:
+                        bouton['text'] = "M"
+                    else:
+                        bouton['text'] = case.nombre_mines_voisines
