@@ -21,9 +21,15 @@ class InterfacePartie(Tk):
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0, 0)
+
+        # Attributs
         self.nombre_rangees_partie = 5
         self.nombre_colonnes_partie = 5
         self.nombre_mines_partie = 5
+        self.cadre = Frame(self)
+        self.cadre.grid(padx=10, pady=10)
+        self.defaite = False
+        self.tour = 0
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
@@ -34,7 +40,7 @@ class InterfacePartie(Tk):
         menu_partie.add_command(label="Configurer la partie", command = self.configurer_partie)
         menu_partie.add_command(label="Nouvelle partie", command=self.nouvelle_partie)
         menu_partie.add_command(label="Charger une partie")
-        menu_partie.add_command(label="Sauvegarde la partie")
+        menu_partie.add_command(label="Sauvegarde la partie", command=self.sauvegarde_partie)
 
         ## On ajoue les menus a barre_menu
         barre_menu.add_cascade(label="Partie", menu = menu_partie)
@@ -58,9 +64,6 @@ class InterfacePartie(Tk):
         bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
         bouton_info.grid(row=0, column=2)
 
-        self.cadre = Frame(self)
-        self.cadre.grid(padx=10, pady=10)
-        self.defaite = False
 
         # self.dictionnaire_boutons = {}
         # self.tableau_mines = Tableau(self.nombre_rangees_partie,self.nombre_colonnes_partie,self.nombre_mines_partie)
@@ -72,16 +75,17 @@ class InterfacePartie(Tk):
         #         bouton.bind('<Button-1>', self.devoiler_case)
         #         self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
-        self.tour = 0
-        self.compteur_tour()
-
+        
+        
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
         self.label.grid()
         self.remaining = 0
-        self.countdown(5000)
+        # self.countdown(5000)
+
+        # A la fin on lance la partie une partie
         self.nouvelle_partie()
-        #Code pour compteur de tour
+
 
     def compteur_tour(self):
         phrase = f"Tour#{self.tour}"
@@ -159,6 +163,8 @@ class InterfacePartie(Tk):
         print("patete")
 
     def nouvelle_partie(self):
+        self.countdown(5000)
+        self.compteur_tour()
         self.dictionnaire_boutons = {}
         self.cadre.destroy()
         self.cadre = Frame(self)
@@ -258,3 +264,11 @@ class InterfacePartie(Tk):
             self.nouvelle_partie()
         ])
         bouton_soumission.grid(row=3, column = 0, columnspan = 2)
+
+    def sauvegarde_partie(self):
+        donnees = {}
+        donnees['rangees'] = self.nombre_rangees_partie
+        donnees['colonnes'] = self.nombre_colonnes_partie
+        donnees['mines'] = self.nombre_mines_partie
+        with open("fichier_sauvegarde.txt", "w") as fichier_sauvegarde:
+            json.dump(donnees, fichier_sauvegarde)
