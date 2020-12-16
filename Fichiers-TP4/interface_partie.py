@@ -4,7 +4,7 @@ Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu
+from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, StringVar
 from tableau import Tableau
 from bouton_case import BoutonCase
 
@@ -16,7 +16,7 @@ from random import randrange
 
 class InterfacePartie(Tk):
     def __init__(self):
-        super().__init__()  # Comme root = Tk() !!
+        super().__init__()  # Comme root = Tk() !! root = self ici
 
         # Nom de la fenêtre.
         self.title("Démineur")
@@ -28,6 +28,7 @@ class InterfacePartie(Tk):
 
         ## On crée ensuite les différents menus
         menu_partie = Menu(barre_menu, tearoff=0)
+        menu_partie.add_command(label="Configurer la partie", command = self.configurer_partie)
         menu_partie.add_command(label="Nouvelle partie", command=self.nouvelle_partie)
         menu_partie.add_command(label="Charger une partie")
         menu_partie.add_command(label="Sauvegarde la partie")
@@ -53,11 +54,6 @@ class InterfacePartie(Tk):
         # Bouton info
         bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
         bouton_info.grid(row=0, column=2)
-
-        # entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
-        # entree_nb_colonnes = Entry(
-        #     bouton_frame, width=10).grid(row=1, column=1)
-        # entree_nb_mines = Entry(bouton_frame, width=10).grid(row=1, column=2)
 
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
@@ -179,7 +175,9 @@ class InterfacePartie(Tk):
             None
         """
         question = messagebox.askyesno(
-            title="Quitter", message="Voulez-vous vraiment quitter ?")
+            title="Quitter",
+            message="Voulez-vous vraiment quitter ?")
+
         if question == True:
             self.destroy()
 
@@ -196,3 +194,31 @@ class InterfacePartie(Tk):
             None
         """
         messagebox.showinfo(title= 'Info', message= 'This is how u play')
+
+    def configurer_partie(self):
+        fenetre = Toplevel()
+        fenetre.wm_title('Fenetre Test')
+        
+        fenetre_frame = Frame(fenetre, height = 200, width = 200)
+        fenetre_frame.grid(padx=10, pady=10)
+
+        label_rangee = Label(fenetre_frame, text="Rangee: ")
+        label_rangee.grid(row = 0, column = 0)
+        entry_rangee = Entry(fenetre_frame, width = 5)
+        entry_rangee.grid(row = 0, column = 1)
+        # texte_entry_rangee = StringVar()
+
+        label_colonne = Label(fenetre_frame, text="Colonne: ")
+        label_colonne.grid(row = 1, column = 0)
+        entry_colonne = Entry(fenetre_frame, width = 5)
+        entry_colonne.grid(row = 1, column = 1)
+        # texte_entry_colonne = StringVar()
+        
+        label_mines = Label(fenetre_frame, text="Mines: ")
+        label_mines.grid(row = 2, column = 0)
+        entry_mine = Entry(fenetre_frame, width = 5)
+        entry_mine.grid(row = 2, column = 1)
+        # texte_entry_mine = StringVar()
+
+        bouton_soumission = Button(fenetre_frame, text="Go!")
+        bouton_soumission.grid(row=3, column = 0, columnspan = 2)
