@@ -21,9 +21,9 @@ class InterfacePartie(Tk):
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0, 0)
-        self.nombre_rangees_partie = 10
-        self.nombre_colonnes_partie = 10
-        self.nombre_mines_partie = 10
+        self.nombre_rangees_partie = 5
+        self.nombre_colonnes_partie = 5
+        self.nombre_mines_partie = 5
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
@@ -62,17 +62,16 @@ class InterfacePartie(Tk):
         self.cadre.grid(padx=10, pady=10)
         self.defaite = False
 
-        self.dictionnaire_boutons = {}
-        self.tableau_mines = Tableau(self.nombre_rangee,self.nombre_colonne,self.nombre_mines_partie)
+        # self.dictionnaire_boutons = {}
+        # self.tableau_mines = Tableau(self.nombre_rangees_partie,self.nombre_colonnes_partie,self.nombre_mines_partie)
 
-        for i in range(self.tableau_mines.dimension_rangee):
-            for j in range(self.tableau_mines.dimension_colonne):
-                bouton = BoutonCase(self.cadre, i+1, j+1)
-                bouton.grid(row=i, column=j)
-                bouton.bind('<Button-1>', self.devoiler_case)
-                self.dictionnaire_boutons[(i+1, j+1)] = bouton
+        # for i in range(self.tableau_mines.dimension_rangee):
+        #     for j in range(self.tableau_mines.dimension_colonne):
+        #         bouton = BoutonCase(self.cadre, i+1, j+1)
+        #         bouton.grid(row=i, column=j)
+        #         bouton.bind('<Button-1>', self.devoiler_case)
+        #         self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
-        #Code pour compteur de tour
         self.tour = 0
         self.compteur_tour()
 
@@ -81,6 +80,8 @@ class InterfacePartie(Tk):
         self.label.grid()
         self.remaining = 0
         self.countdown(5000)
+        self.nouvelle_partie()
+        #Code pour compteur de tour
 
     def compteur_tour(self):
         phrase = f"Tour#{self.tour}"
@@ -134,7 +135,7 @@ class InterfacePartie(Tk):
                 
             self.defaite = True
         elif not case.est_minee:
-            bouton['text'] = case.nombre_mines_partie_voisines
+            bouton['text'] = case.nombre_mines_voisines
             self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
             self.defaite = False
 
@@ -152,16 +153,30 @@ class InterfacePartie(Tk):
                 if case.est_minee:
                     bout['text'] = 'M'
                 else:
-                    bout['text'] = case.nombre_mines_partie_voisines
+                    bout['text'] = case.nombre_mines_voisines
 
     def test2(self):
         print("patete")
 
     def nouvelle_partie(self):
-        self.tableau_mines = Tableau(self.nombre_rangee, self.nombre_colonne, self.nombre_mine)
+        self.dictionnaire_boutons = {}
+        self.cadre.destroy()
+        self.cadre = Frame(self)
+        self.cadre.grid(padx=10, pady=10)
+        print(self.dictionnaire_boutons)
+        self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie)
+        for i in range(self.tableau_mines.dimension_rangee):
+            for j in range(self.tableau_mines.dimension_colonne):
+                bouton = BoutonCase(self.cadre, i+1, j+1)
+                bouton.grid(row=i, column=j)
+                bouton.bind('<Button-1>', self.devoiler_case)
+                self.dictionnaire_boutons[(i+1, j+1)] = bouton
+        print(self.dictionnaire_boutons)
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
+
+
         self.tour = 0
         self.compteur_tour()
 
@@ -198,6 +213,11 @@ class InterfacePartie(Tk):
         """
         messagebox.showinfo(title= 'Info', message= 'This is how u play')
 
+    def maj_donnees(self, nb_rangees, nb_colonnes, nb_mines):
+        self.nombre_rangees_partie = nb_rangees
+        self.nombre_colonnes_partie = nb_colonnes
+        self.nombre_mines_partie = nb_mines
+        
     def configurer_partie(self):
         fenetre = Toplevel()
         fenetre.wm_title('Fenetre Test')
@@ -210,35 +230,31 @@ class InterfacePartie(Tk):
         label_rangee.grid(row = 0, column = 0)
         entry_rangee = Entry(fenetre_frame, width = 5)
         entry_rangee.grid(row = 0, column = 1)
-        # texte_entry_rangee = StringVar()
 
         ## On cree le label et entry pour colonne
         label_colonne = Label(fenetre_frame, text="Colonne: ")
         label_colonne.grid(row = 1, column = 0)
         entry_colonne = Entry(fenetre_frame, width = 5)
         entry_colonne.grid(row = 1, column = 1)
-        # texte_entry_colonne = StringVar()
         
         ## On cree le label et entry pour mine
         label_mines = Label(fenetre_frame, text="Mines: ")
         label_mines.grid(row = 2, column = 0)
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
-        # texte_entry_mine = StringVar()
-        ## On prends les valeurs des entry
-        # nb_rangee = entry_rangee.get()
-        # nb_colonne = entry_colonne.get()
-        # nb_mine = entry_mine.get()
 
-        ## Encapsulation pour extraire les donnees des entry
-        def configurer_partie(self):
-            self.nombre_rangees_partie = entry_rangee.get()
-            self.nombre_colonnes_partie = entry_colonne.get()
-            self.nombre_mines_partie = entry_mine.get()
-            self.nouvelle_partie()
+        # self.nombre_rangees_partie = entry_rangee.get()
+        # self.nombre_colonnes_partie = entry_colonne.get()
+        # self.nombre_mines_partie = entry_mine.get()
+        # self.nouvelle_partie()
 
         ## Le lamba permet de passer une commande aves des arguments:
             ## A Implementer:
                 #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
-        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda: configurer_partie)
+        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
+            self.maj_donnees(int(entry_rangee.get()), int(entry_colonne.get()), int(entry_mine.get())),
+            print(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie),
+            fenetre.destroy(),
+            self.nouvelle_partie()
+        ])
         bouton_soumission.grid(row=3, column = 0, columnspan = 2)
