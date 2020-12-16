@@ -202,23 +202,34 @@ class InterfacePartie(Tk):
         fenetre_frame = Frame(fenetre, height = 200, width = 200)
         fenetre_frame.grid(padx=10, pady=10)
 
+        ## On cree le label et entry pour rangee
         label_rangee = Label(fenetre_frame, text="Rangee: ")
         label_rangee.grid(row = 0, column = 0)
         entry_rangee = Entry(fenetre_frame, width = 5)
         entry_rangee.grid(row = 0, column = 1)
         # texte_entry_rangee = StringVar()
 
+        ## On cree le label et entry pour colonne
         label_colonne = Label(fenetre_frame, text="Colonne: ")
         label_colonne.grid(row = 1, column = 0)
         entry_colonne = Entry(fenetre_frame, width = 5)
         entry_colonne.grid(row = 1, column = 1)
         # texte_entry_colonne = StringVar()
         
+        ## On cree le label et entry pour mine
         label_mines = Label(fenetre_frame, text="Mines: ")
         label_mines.grid(row = 2, column = 0)
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
         # texte_entry_mine = StringVar()
+        print(entry_mine.get())
+        ## On prends les valeurs des entry
+        # nb_rangee = entry_rangee.get()
+        # nb_colonne = entry_colonne.get()
+        # nb_mine = entry_mine.get()
 
-        bouton_soumission = Button(fenetre_frame, text="Go!")
+        ## Le lamba permet de passer une commande aves des arguments:
+            ## A Implementer:
+                #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
+        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda: print(entry_rangee.get(), entry_colonne.get(), entry_mine.get()))
         bouton_soumission.grid(row=3, column = 0, columnspan = 2)
