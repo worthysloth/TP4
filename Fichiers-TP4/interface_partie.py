@@ -4,11 +4,11 @@ Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label
+from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu
 from tableau import Tableau
 from bouton_case import BoutonCase
 
-
+import json
 import time
 
 from random import randrange
@@ -21,6 +21,23 @@ class InterfacePartie(Tk):
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0, 0)
+
+        ## Bloc qui ajoute un menu ======================================================================
+        ## On crée un item barre_menu qui représente un menu de sélection
+        barre_menu = Menu(self)
+
+        ## On crée ensuite les différents menus
+        menu_partie = Menu(barre_menu, tearoff=0)
+        menu_partie.add_command(label="Nouvelle partie", command=self.nouvelle_partie)
+        menu_partie.add_command(label="Charger une partie")
+        menu_partie.add_command(label="Sauvegarde la partie")
+
+        ## On ajoue les menus a barre_menu
+        barre_menu.add_cascade(label="Partie", menu = menu_partie)
+
+        ## On place la barre_menu avec config parce qu'on utilise grid (peut pas faire barre_menu.grid())
+        self.configure(menu=barre_menu)
+         ## Fin Du Bloc qui ajoute un menu ======================================================================
 
         bouton_frame = Frame(self)
         bouton_frame.grid()
@@ -37,10 +54,10 @@ class InterfacePartie(Tk):
         bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
         bouton_info.grid(row=0, column=2)
 
-        entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
-        entree_nb_colonnes = Entry(
-            bouton_frame, width=10).grid(row=1, column=1)
-        entree_nb_mines = Entry(bouton_frame, width=10).grid(row=1, column=2)
+        # entree_nb_rangees = Entry(bouton_frame, width=10).grid(row=1, column=0)
+        # entree_nb_colonnes = Entry(
+        #     bouton_frame, width=10).grid(row=1, column=1)
+        # entree_nb_mines = Entry(bouton_frame, width=10).grid(row=1, column=2)
 
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
@@ -77,7 +94,6 @@ class InterfacePartie(Tk):
         Fonction pour le mode "contre-la-montre" qui affiche la solution
         si jamais l'utilisateur ne termine pas avant le temps impartie
 
-
         Args:
             remaining ([type], optional): [description]. Defaults to None.
 
@@ -91,7 +107,7 @@ class InterfacePartie(Tk):
 
         if self.remaining <= 0:
             self.label.configure(text="Temps écoulé")
-            self.tableau_mines.afficher_solution()
+            #self.tableau_mines.afficher_solution() # C'est quoi ca David ? ALEX
         else:
             self.label.configure(text="%d" % self.remaining)
             self.remaining = self.remaining - 1
