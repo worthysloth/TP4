@@ -117,6 +117,7 @@ class InterfacePartie(Tk):
             bouton.rangee_x, bouton.colonne_y)
 
         if case.est_minee:
+            case.devoiler()
             bouton['text'] = "M"
             if messagebox.askyesno(title="Lost", message="Ta perdu, voulez-vous recommencez?", command=self.afficher_solution()):
                 self.nouvelle_partie()
@@ -125,7 +126,9 @@ class InterfacePartie(Tk):
                 
             self.defaite = True
         elif not case.est_minee:
+            case.devoiler()
             bouton['text'] = case.nombre_mines_voisines
+            bouton['fg'] = 'red' ## Changer couleur 
             self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
             self.defaite = False
 
@@ -252,6 +255,14 @@ class InterfacePartie(Tk):
         donnees['colonnes'] = self.nombre_colonnes_partie
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
+        donnees['tableau'] = {}
+        for numero_case, case in enumerate(self.tableau_mines.dictionnaire_cases.values()):
+            donnees['tableau'][numero_case + 1] = {
+                "minee": case.est_minee,
+                "devoilee":case.est_devoilee,
+                "nombre_voisins":case.nombre_mines_voisines
+            }
+
         with open("fichier_sauvegarde.txt", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
 
@@ -263,11 +274,15 @@ class InterfacePartie(Tk):
         self.nombre_colonnes_partie = donnees['colonnes']
         self.nombre_mines_partie = donnees['mines']
         self.tour = donnees['tours']
+       
+
+
+
         self.nouvelle_partie() ## Je sais pas encoire quoi mais on veut juste restaurer les stats avec la boucle suivante : 
-            # for i in range(self.tableau_mines.dimension_rangee):
-            # for j in range(self.tableau_mines.dimension_colonne):
-            #     bouton = BoutonCase(self.cadre, i+1, j+1)
-            #     bouton.grid(row=i, column=j)
-            #     bouton.bind('<Button-1>', self.devoiler_case)
-            #     self.dictionnaire_boutons[(i+1, j+1)] = bouton
+        for i in range(self.tableau_mines.dimension_rangee):
+            for j in range(self.tableau_mines.dimension_colonne):
+                bouton = BoutonCase(self.cadre, i+1, j+1)
+                bouton.grid(row=i, column=j)
+                bouton.bind('<Button-1>', self.devoiler_case)
+                self.dictionnaire_boutons[(i+1, j+1)] = bouton
         print(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie, self.tour)
