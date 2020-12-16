@@ -21,6 +21,9 @@ class InterfacePartie(Tk):
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0, 0)
+        self.nombre_rangees_partie = 10
+        self.nombre_colonnes_partie = 10
+        self.nombre_mines_partie = 10
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
@@ -60,7 +63,7 @@ class InterfacePartie(Tk):
         self.defaite = False
 
         self.dictionnaire_boutons = {}
-        self.tableau_mines = Tableau()
+        self.tableau_mines = Tableau(self.nombre_rangee,self.nombre_colonne,self.nombre_mines_partie)
 
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -131,7 +134,7 @@ class InterfacePartie(Tk):
                 
             self.defaite = True
         elif not case.est_minee:
-            bouton['text'] = case.nombre_mines_voisines
+            bouton['text'] = case.nombre_mines_partie_voisines
             self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
             self.defaite = False
 
@@ -149,13 +152,13 @@ class InterfacePartie(Tk):
                 if case.est_minee:
                     bout['text'] = 'M'
                 else:
-                    bout['text'] = case.nombre_mines_voisines
+                    bout['text'] = case.nombre_mines_partie_voisines
 
     def test2(self):
         print("patete")
 
     def nouvelle_partie(self):
-        self.tableau_mines = Tableau()
+        self.tableau_mines = Tableau(self.nombre_rangee, self.nombre_colonne, self.nombre_mine)
 
         for bouton in self.dictionnaire_boutons.values():
             bouton['text'] = " "
@@ -222,14 +225,20 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
         # texte_entry_mine = StringVar()
-        print(entry_mine.get())
         ## On prends les valeurs des entry
         # nb_rangee = entry_rangee.get()
         # nb_colonne = entry_colonne.get()
         # nb_mine = entry_mine.get()
 
+        ## Encapsulation pour extraire les donnees des entry
+        def configurer_partie(self):
+            self.nombre_rangees_partie = entry_rangee.get()
+            self.nombre_colonnes_partie = entry_colonne.get()
+            self.nombre_mines_partie = entry_mine.get()
+            self.nouvelle_partie()
+
         ## Le lamba permet de passer une commande aves des arguments:
             ## A Implementer:
                 #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
-        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda: print(entry_rangee.get(), entry_colonne.get(), entry_mine.get()))
+        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda: configurer_partie)
         bouton_soumission.grid(row=3, column = 0, columnspan = 2)
