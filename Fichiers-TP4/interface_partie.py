@@ -4,7 +4,7 @@ Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, StringVar
+from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, Message
 from tableau import Tableau
 from bouton_case import BoutonCase
 
@@ -21,13 +21,13 @@ class InterfacePartie(Tk):
         # Nom de la fenêtre.
         self.title("Démineur")
         self.resizable(0, 0)
-
         # Attributs
         self.nombre_rangees_partie = 5
         self.nombre_colonnes_partie = 5
         self.nombre_mines_partie = 5
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
+        self.dictionnaire_boutons = {}
         self.defaite = False
         self.tour = 0
 
@@ -121,36 +121,60 @@ class InterfacePartie(Tk):
             event ([type]): [description]
         """
         bouton = event.widget
-        case = self.tableau_mines.obtenir_case(
-            bouton.rangee_x, bouton.colonne_y)
-    
+        case = self.tableau_mines.obtenir_case(bouton.rangee_x, bouton.colonne_y)
+        bouton['relief'] = 'sunken'
         if not case.est_devoilee:
-            self.compteur_tour()
             case.devoiler()
-            bouton['fg'] = 'red' ## Changer couleur 
-            bouton['relief'] = 'sunken'
             if case.est_minee:
-                bouton['text'] = "M"
-                if messagebox.showinfo(title="Lost", message="Ta perdu, cliques pour continuer."):
-                    self.afficher_solution()
-                else:
-                    self.quit()
+                bouton['text'] = 'M'
+                self.afficher_defaite()
                 self.defaite = True
-
             elif not case.est_minee:
                 bouton['text'] = case.nombre_mines_voisines
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-                self.defaite = False
-
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
-            messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
+            print('PU DE MINES!')
+            self.afficher_victoire()
+            
+
+    def afficher_defaite(self):
+        msgbox = Toplevel()
+        message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!")
+        message.pack()
+        bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
+        bouton_ok.pack()
+    def afficher_victoire(self):
+        msgbox = Toplevel()
+        message = Message(msgbox, text="Vous avez gagné! Appuyer sur OK!")
+        message.pack()
+        bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
+        bouton_ok.pack()
+        # if not case.est_devoilee:
+        #     self.compteur_tour()
+        #     case.devoiler()
+        #     bouton['fg'] = 'red' ## Changer couleur 
+        #     bouton['relief'] = 'sunken'
+        #     if case.est_minee:
+        #         bouton['text'] = "M"
+        #         if messagebox.showinfo(title="Lost", message="Ta perdu, cliques pour continuer."):
+        #             self.afficher_solution()
+        #         else:
+        #             self.quit()
+        #         self.defaite = True
+
+        #     elif not case.est_minee:
+        #         bouton['text'] = case.nombre_mines_voisines
+        #         self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+        #         self.defaite = False
+
+        # if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
+        #     messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
-                # self.tableau_mines.devoiler_case(i+1, j+1)
-                self.devoiler_case()
+                self.tableau_mines.devoiler_case(i+1, j+1)
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 bout['relief'] = 'raised'
                 if case.est_minee:
