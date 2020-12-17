@@ -55,7 +55,7 @@ class InterfacePartie(Tk):
 
         ## On place la barre_menu avec config parce qu'on utilise grid (peut pas faire barre_menu.grid())
         self.configure(menu=barre_menu)
-         ## Fin Du Bloc qui ajoute un menu ======================================================================
+        ## Fin Du Bloc qui ajoute un menu ======================================================================
 
         # bouton_frame = Frame(self)
         # bouton_frame.grid()
@@ -123,35 +123,36 @@ class InterfacePartie(Tk):
         bouton = event.widget
         case = self.tableau_mines.obtenir_case(
             bouton.rangee_x, bouton.colonne_y)
+    
         if not case.est_devoilee:
             self.compteur_tour()
+            case.devoiler()
+            bouton['fg'] = 'red' ## Changer couleur 
+            bouton['relief'] = 'sunken'
             if case.est_minee:
-                case.devoiler()
                 bouton['text'] = "M"
-                if messagebox.askyesno(title="Lost", message="Ta perdu, cliques pour continuer."):
+                if messagebox.showinfo(title="Lost", message="Ta perdu, cliques pour continuer."):
                     self.afficher_solution()
                 else:
                     self.quit()
                 self.defaite = True
 
             elif not case.est_minee:
-                case.devoiler()
                 bouton['text'] = case.nombre_mines_voisines
-                # bouton['fg'] = 'red' ## Changer couleur 
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-                
+                self.defaite = False
 
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
-            print("patate")
             messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
-        
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
-                self.tableau_mines.devoiler_case(i+1, j+1)
+                # self.tableau_mines.devoiler_case(i+1, j+1)
+                self.devoiler_case()
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
+                bout['relief'] = 'raised'
                 if case.est_minee:
                     bout['text'] = 'M'
                 else:
@@ -177,9 +178,8 @@ class InterfacePartie(Tk):
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
 
-        for bouton in self.dictionnaire_boutons.values():
-            bouton['text'] = " "
-
+        # for bouton in self.dictionnaire_boutons.values():
+        #     bouton['text'] = ""
 
         self.tour = 0
         self.compteur_tour()
@@ -299,7 +299,6 @@ class InterfacePartie(Tk):
         self.countdown(5000)
         self.compteur_tour()
 
-
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
@@ -319,5 +318,3 @@ class InterfacePartie(Tk):
 
     def afficher_createurs(self):
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
-
-# TEST

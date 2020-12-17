@@ -281,7 +281,7 @@ class Tableau():
             print() # Retour de ligne
             if rangee_x == 0: # Ligne horizontale de l'en-tête
                 print('--+-' + '--'*self.dimension_colonne) 
-         
+        
     def afficher_tableau(self):
         """
         Méthode qui affiche le tableau à l'écran. Le tableau montre le contenu 
@@ -347,7 +347,7 @@ class Tableau():
         reçues en argument. Si la case ne contient pas de mine, on décrémente
         l'attribut qui représente le nombre de cases sans mine à dévoiler. Aussi
         si cette case n'est voisine d'aucune mine, on dévoile ses voisins. 
-       
+
         Args:
             rangee_x (int) : Numéro de la rangée de la case à dévoiler
             colonne_y (int): Numéro de la colonne de la case à dévoiler
