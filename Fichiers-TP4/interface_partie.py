@@ -14,7 +14,7 @@ from random import randrange
 
 class InterfacePartie(Tk):
     def __init__(self):
-        super().__init__()  # Comme root = Tk() !! root = self ici
+        super().__init__()
 
         # Nom de la fenêtre.
         self.title("Démineur")
@@ -35,6 +35,7 @@ class InterfacePartie(Tk):
             chemin_img = os.path.join(chemin, f'images/tile_{str(i)}.png')
             image_actuelle = PhotoImage(file = chemin_img)
             self.liste_images_nombres.append(image_actuelle)
+
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
@@ -60,11 +61,14 @@ class InterfacePartie(Tk):
         ## On place la barre_menu avec config parce qu'on utilise grid (peut pas faire barre_menu.grid())
         self.configure(menu=barre_menu)
         ## Fin Du Bloc qui ajoute un menu ======================================================================
+
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
         self.label.grid()
         self.remaining = 0
         # self.countdown(5000)
+        self.labeltour = Label(self, text=f"TourPENIS#{self.tour}", width=10)
+        self.labeltour.grid()
 
         chemin_fichier = os.path.dirname(__file__)
         chemin_bombe = os.path.join(chemin_fichier, 'images/bomb2.png')
@@ -72,10 +76,10 @@ class InterfacePartie(Tk):
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
 
-    def compteur_tour(self):
-        phrase = f"Tour#{self.tour}"
-        self.labeltour = Label(self, text= phrase, width=10)
-        self.labeltour.grid(row=10)
+    def ajouter_tour(self):
+        self.labeltour.destroy()
+        self.labeltour = Label(self, text=f"Tour#{self.tour}", width=10)
+        self.labeltour.grid(row=0)
         self.tour += 1
 
     def countdown(self, remaining=None):
@@ -111,22 +115,22 @@ class InterfacePartie(Tk):
         """
         bouton = event.widget
         case = self.tableau_mines.obtenir_case(bouton.rangee_x, bouton.colonne_y)
-        # bouton['relief'] = 'sunken'
-        if not case.est_devoilee:
+        if not case.est_devoilee and not self.defaite:
             case.devoiler()
+            self.ajouter_tour()
             if case.est_minee:
                 bouton['image'] = self.image_bombe
                 bouton['height'] = self.image_bombe.height()
                 bouton['width'] = self.image_bombe.width()
                 self.afficher_defaite()
-                self.defaite = True
+
             elif not case.est_minee:
                 bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
-        if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
-            print('PU DE MINES!')
-            self.afficher_victoire()
+            if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
+                print('PU DE MINES!')
+                self.afficher_victoire()
             
 
     def afficher_defaite(self):
@@ -136,6 +140,8 @@ class InterfacePartie(Tk):
         message.grid(row=0, column=0,columnspan=3)
         bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
         bouton_ok.grid(row=2, column=1)
+        self.defaite = True
+
     def afficher_victoire(self):
         msgbox = Toplevel()
         message = Message(msgbox, text="Vous avez gagné! Appuyer sur OK!",anchor='center',justify='center')
@@ -162,9 +168,10 @@ class InterfacePartie(Tk):
 
     def nouvelle_partie(self):
         self.countdown(5000)
-        self.compteur_tour()
         self.dictionnaire_boutons = {}
         self.cadre.destroy()
+        self.tour = 0
+        self.ajouter_tour()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
         self.defaite = False
@@ -175,12 +182,6 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-
-        # for bouton in self.dictionnaire_boutons.values():
-        #     bouton['text'] = ""
-
-        self.tour = 0
-        self.compteur_tour()
 
     def demander_ouinon(self):
         """Auteur: David
@@ -215,15 +216,16 @@ class InterfacePartie(Tk):
         messagebox.showinfo(title= 'Info', message= 'This is how u play')
 
     def maj_donnees(self, nb_rangees, nb_colonnes, nb_mines):
+
         self.nombre_rangees_partie = nb_rangees
         self.nombre_colonnes_partie = nb_colonnes
         self.nombre_mines_partie = nb_mines
         
     def configurer_partie(self):
-        fenetre = Toplevel()
-        fenetre.wm_title('Fenetre Test')
+        self.fenetre = Toplevel()
+        self.fenetre.wm_title('Configuration de la partie')
         
-        fenetre_frame = Frame(fenetre, height = 200, width = 200)
+        fenetre_frame = Frame(self.fenetre, height = 200, width = 200)
         fenetre_frame.grid(padx=10, pady=10)
 
         ## On cree le label et entry pour rangee
@@ -244,15 +246,26 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
 
-        ## Le lamba permet de passer une commande aves des arguments:
-            ## A Implementer:
-                #[ ] command => self.nouvelle_partie(va falloir figure out comment passer des arguments a nouvelle partie pour ensuie les passer a Tableau())
+        self.label_erreur_configuration = Label(fenetre_frame, text='')
+        self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
+
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
-            self.maj_donnees(int(entry_rangee.get()), int(entry_colonne.get()), int(entry_mine.get())),
-            fenetre.destroy(),
-            self.nouvelle_partie()
+            self.maj_donnees(entry_rangee.get(),entry_colonne.get(),entry_mine.get()),
+            self.valider_configuration(entry_rangee.get(),entry_colonne.get(),entry_mine.get(),fenetre_frame)
         ])
-        bouton_soumission.grid(row=3, column = 0, columnspan = 2)
+        bouton_soumission.grid(row=4, column = 0, columnspan = 2)
+
+    def valider_configuration(self, nb_rangees, nb_colonnes, nb_mines, widget):
+        # AJOUTER EQUATION POUR NOMBRE DEMINE AVEC UN EXCEPT 
+        try:
+            if not self.nombre_rangees_partie.isnumeric() or not self.nombre_colonnes_partie.isnumeric() or not self.nombre_mines_partie.isnumeric():
+                raise ValueError 
+
+            self.nouvelle_partie()
+            print("🏆")
+            self.fenetre.destroy()
+        except ValueError:
+            self.label_erreur_configuration.config(text="ERREUR")
 
     def sauvegarde_partie(self):
         donnees = {}
@@ -261,6 +274,8 @@ class InterfacePartie(Tk):
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
         donnees['tableau'] = {}
+        donnees['defaite'] = self.defaite
+
   
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -286,10 +301,11 @@ class InterfacePartie(Tk):
         self.nombre_colonnes_partie = donnees['colonnes']
         self.nombre_mines_partie = donnees['mines']
         self.tour = donnees['tours'] - 1
+        self.defaite = donnees['defaite']
 
         self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie,self.nombre_mines_partie)
         self.countdown(5000)
-        self.compteur_tour()
+        self.ajouter_tour()
 
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
