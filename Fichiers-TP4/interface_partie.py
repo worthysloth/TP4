@@ -10,7 +10,6 @@ from bouton_case import BoutonCase
 import os
 import json
 import time
-
 from random import randrange
 
 class InterfacePartie(Tk):
@@ -29,7 +28,13 @@ class InterfacePartie(Tk):
         self.dictionnaire_boutons = {}
         self.defaite = False
         self.tour = 0
+        self.liste_images_nombres = []
 
+        for i in range(8):
+            chemin = os.path.dirname(__file__)
+            chemin_img = os.path.join(chemin, f'images/tile_{str(i)}.png')
+            image_actuelle = PhotoImage(file = chemin_img)
+            self.liste_images_nombres.append(image_actuelle)
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
@@ -55,22 +60,6 @@ class InterfacePartie(Tk):
         ## On place la barre_menu avec config parce qu'on utilise grid (peut pas faire barre_menu.grid())
         self.configure(menu=barre_menu)
         ## Fin Du Bloc qui ajoute un menu ======================================================================
-
-        # bouton_frame = Frame(self)
-        # bouton_frame.grid()
-
-        # bouton_nouvelle_partie = Button(bouton_frame, text='Nouvelle partie',
-        #                                 command=self.nouvelle_partie)
-        # bouton_nouvelle_partie.grid(row=0, column=0)
-
-        # bouton_quitter = Button(bouton_frame, text="Quitter",
-        #                         command=self.demander_ouinon)
-        # bouton_quitter.grid(row=0, column=1)
-
-        # Bouton info
-        # bouton_info = Button(bouton_frame, text = 'Info',command = self.afficher_intructions)
-        # bouton_info.grid(row=0, column=2)     
-        
         ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
         self.label = Label(self, text="Timer", width=10)
         self.label.grid()
@@ -113,8 +102,6 @@ class InterfacePartie(Tk):
             self.remaining = self.remaining - 1
             self.after(1000, self.countdown)
 
-    #test3 = afficher_solution
-
     def devoiler_case(self, event):
         """
         NE FONCTIONNE PAS BIEN. LA SOLUTION S'AFFICHE DANS CMD ET NON TKINTER ET IL NE DÉTECTE PAS QUE LA GAME EST TERMINÉ
@@ -134,7 +121,7 @@ class InterfacePartie(Tk):
                 self.afficher_defaite()
                 self.defaite = True
             elif not case.est_minee:
-                bouton['text'] = case.nombre_mines_voisines
+                bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
@@ -155,26 +142,6 @@ class InterfacePartie(Tk):
         message.pack()
         bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
         bouton_ok.pack()
-        # if not case.est_devoilee:
-        #     self.compteur_tour()
-        #     case.devoiler()
-        #     bouton['fg'] = 'red' ## Changer couleur 
-        #     bouton['relief'] = 'sunken'
-        #     if case.est_minee:
-        #         bouton['text'] = "M"
-        #         if messagebox.showinfo(title="Lost", message="Ta perdu, cliques pour continuer."):
-        #             self.afficher_solution()
-        #         else:
-        #             self.quit()
-        #         self.defaite = True
-
-        #     elif not case.est_minee:
-        #         bouton['text'] = case.nombre_mines_voisines
-        #         self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-        #         self.defaite = False
-
-        # if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
-        #     messagebox.showinfo(title="Winner", message="WINNER WINNER CHICKEN DINNER",command=self.afficher_solution())
 
     def afficher_solution(self):
         for i in range(self.tableau_mines.dimension_rangee):
@@ -188,7 +155,7 @@ class InterfacePartie(Tk):
                     bout['height'] = self.image_bombe.height()
                     bout['width'] = self.image_bombe.width()
                 else:
-                    bout['text'] = case.nombre_mines_voisines
+                    bout['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
 
     def test2(self):
         print("patete")
@@ -208,7 +175,6 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-
 
         # for bouton in self.dictionnaire_boutons.values():
         #     bouton['text'] = ""
@@ -295,12 +261,7 @@ class InterfacePartie(Tk):
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
         donnees['tableau'] = {}
-        # for numero_case, case in enumerate(self.tableau_mines.dictionnaire_cases.values()):
-        #     donnees['tableau'][numero_case] = {
-        #         "minee": case.est_minee,
-        #         "devoilee":case.est_devoilee,
-        #         "nombre_voisins":case.nombre_mines_voisines
-        #     }
+  
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
@@ -343,9 +304,9 @@ class InterfacePartie(Tk):
                 if case.est_devoilee:
                     self.tableau_mines.devoiler_case(i+1, j+1)
                     if case.est_minee:
-                        bouton['text'] = "M"
+                        bouton['image'] = self.image_bombe
                     else:
-                        bouton['text'] = case.nombre_mines_voisines
+                        bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
 
     def afficher_createurs(self):
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
