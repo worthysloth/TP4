@@ -4,7 +4,7 @@ Vous pouvez le modifier à souhait.
 N'oubliez pas de commenter le code!
 """
 
-from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, Message
+from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, Message, StringVar
 from tableau import Tableau
 from bouton_case import BoutonCase
 
@@ -122,7 +122,7 @@ class InterfacePartie(Tk):
         """
         bouton = event.widget
         case = self.tableau_mines.obtenir_case(bouton.rangee_x, bouton.colonne_y)
-        bouton['relief'] = 'sunken'
+        # bouton['relief'] = 'sunken'
         if not case.est_devoilee:
             case.devoiler()
             if case.est_minee:
@@ -132,6 +132,7 @@ class InterfacePartie(Tk):
             elif not case.est_minee:
                 bouton['text'] = case.nombre_mines_voisines
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+                
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print('PU DE MINES!')
             self.afficher_victoire()
@@ -139,13 +140,14 @@ class InterfacePartie(Tk):
 
     def afficher_defaite(self):
         msgbox = Toplevel()
-        message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!")
-        message.pack()
+        msgbox.grid()
+        message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!",anchor='center',justify='center')
+        message.grid(row=0, column=0,columnspan=3)
         bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
-        bouton_ok.pack()
+        bouton_ok.grid(row=2, column=1)
     def afficher_victoire(self):
         msgbox = Toplevel()
-        message = Message(msgbox, text="Vous avez gagné! Appuyer sur OK!")
+        message = Message(msgbox, text="Vous avez gagné! Appuyer sur OK!",anchor='center',justify='center')
         message.pack()
         bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(), self.afficher_solution()])
         bouton_ok.pack()
@@ -192,7 +194,7 @@ class InterfacePartie(Tk):
         self.cadre.destroy()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
-
+        self.defaite = False
         self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie, self.nombre_mines_partie)
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -235,7 +237,6 @@ class InterfacePartie(Tk):
 
         Args:
             None
-
         Returns:
             None
         """
