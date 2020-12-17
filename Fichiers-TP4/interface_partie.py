@@ -145,7 +145,6 @@ class InterfacePartie(Tk):
                 self.tableau_mines.devoiler_case(i+1, j+1)
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
-                    #bout['text'] = 'M'
                     bout['image'] = self.imagebomb
                     bout['height'] = self.imagebomb.height()
                     bout['width'] = self.imagebomb.width()
