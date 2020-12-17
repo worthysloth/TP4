@@ -72,7 +72,7 @@ class InterfacePartie(Tk):
         
         for i in range(0, 8):
             lien = os.path.dirname(__file__)
-            autre_lien = os.path.join(lien, 'images\\tile_'+str(i)+'.png')
+            autre_lien = os.path.join(lien, f'images\\tile_{str(i)}.png')
             
             nbr = PhotoImage(file = autre_lien)
             
@@ -143,7 +143,7 @@ class InterfacePartie(Tk):
                 
             self.defaite = True
         elif not case.est_minee:
-            bouton['text'] = case.nombre_mines_voisines
+            bouton['image'] = self.nombres[case.nombre_mines_voisines]
             self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
             self.defaite = False
 

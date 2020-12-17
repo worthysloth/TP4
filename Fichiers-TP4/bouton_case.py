@@ -9,4 +9,5 @@ class BoutonCase(Button):
         self.rangee_x = rangee_x
         self.colonne_y = colonne_y
         self.image = ''
-        super().__init__(parent, text=' ', padx=1, pady=3, height=1, width=3, image = self.image)
+        self.text = ''
+        super().__init__(parent, text = self.text, padx=1, pady=3, height=1, width=3, image = self.image)
