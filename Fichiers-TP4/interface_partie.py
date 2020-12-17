@@ -7,7 +7,7 @@ N'oubliez pas de commenter le code!
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label
 from tableau import Tableau
 from bouton_case import BoutonCase
-
+import os
 
 import time
 
@@ -65,6 +65,12 @@ class InterfacePartie(Tk):
         self.label.grid()
         self.remaining = 0
         self.countdown(5000)
+        
+        #print(os.path.dirname(__file__))
+        valo = os.path.dirname(__file__)
+        kiki = os.path.join(valo, 'images\\bomb2.png')
+            
+        self.imagebomb = PhotoImage(file = kiki)
 
     def compteur_tour(self):
         phrase = f"Tour#{self.tour}"
@@ -111,7 +117,11 @@ class InterfacePartie(Tk):
             bouton.rangee_x, bouton.colonne_y)
 
         if case.est_minee:
-            bouton['text'] = "M"
+            
+            bouton['image'] = self.imagebomb
+            bouton['height'] = self.imagebomb.height()
+            bouton['width'] = self.imagebomb.width()
+                
             if messagebox.askyesno(title="Lost", message="Ta perdu, voulez-vous recommencez?", command=self.afficher_solution()):
                 self.nouvelle_partie()
             else:
@@ -135,7 +145,10 @@ class InterfacePartie(Tk):
                 self.tableau_mines.devoiler_case(i+1, j+1)
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
-                    bout['text'] = 'M'
+                    #bout['text'] = 'M'
+                    bout['image'] = self.imagebomb
+                    bout['height'] = self.imagebomb.height()
+                    bout['width'] = self.imagebomb.width()
                 else:
                     bout['text'] = case.nombre_mines_voisines
 
