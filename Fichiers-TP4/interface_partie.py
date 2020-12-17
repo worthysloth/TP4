@@ -154,7 +154,7 @@ class InterfacePartie(Tk):
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
                     bout['text'] = 'M'
-                else:˜
+                else:
                     bout['text'] = case.nombre_mines_voisines
 
     def test2(self):
@@ -319,3 +319,5 @@ class InterfacePartie(Tk):
 
     def afficher_createurs(self):
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
+
+# TEST
