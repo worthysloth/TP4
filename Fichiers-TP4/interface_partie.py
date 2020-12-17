@@ -7,12 +7,11 @@ N'oubliez pas de commenter le code!
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, Message, StringVar
 from tableau import Tableau
 from bouton_case import BoutonCase
-
+import os
 import json
 import time
 
 from random import randrange
-
 
 class InterfacePartie(Tk):
     def __init__(self):
@@ -78,6 +77,9 @@ class InterfacePartie(Tk):
         self.remaining = 0
         # self.countdown(5000)
 
+        chemin_fichier = os.path.dirname(__file__)
+        chemin_bombe = os.path.join(chemin_fichier, 'images/bomb2.png')
+        self.image_bombe = PhotoImage(file = chemin_bombe)
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
 
@@ -126,13 +128,15 @@ class InterfacePartie(Tk):
         if not case.est_devoilee:
             case.devoiler()
             if case.est_minee:
-                bouton['text'] = 'M'
+                bouton['image'] = self.image_bombe
+                bouton['height'] = self.image_bombe.height()
+                bouton['width'] = self.image_bombe.width()
                 self.afficher_defaite()
                 self.defaite = True
             elif not case.est_minee:
                 bouton['text'] = case.nombre_mines_voisines
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-                
+
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print('PU DE MINES!')
             self.afficher_victoire()
@@ -180,7 +184,9 @@ class InterfacePartie(Tk):
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 bout['relief'] = 'raised'
                 if case.est_minee:
-                    bout['text'] = 'M'
+                    bout['image'] = self.image_bombe
+                    bout['height'] = self.image_bombe.height()
+                    bout['width'] = self.image_bombe.width()
                 else:
                     bout['text'] = case.nombre_mines_voisines
 
