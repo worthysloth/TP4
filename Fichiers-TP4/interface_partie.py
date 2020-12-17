@@ -132,14 +132,14 @@ class InterfacePartie(Tk):
                     self.afficher_solution()
                 else:
                     self.quit()
-                    
                 self.defaite = True
+
             elif not case.est_minee:
                 case.devoiler()
                 bouton['text'] = case.nombre_mines_voisines
-                bouton['fg'] = 'red' ## Changer couleur 
+                # bouton['fg'] = 'red' ## Changer couleur 
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-                self.defaite = False
+                
 
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print("patate")
@@ -154,7 +154,7 @@ class InterfacePartie(Tk):
                 bout = self.dictionnaire_boutons[(i+1, j+1)]
                 if case.est_minee:
                     bout['text'] = 'M'
-                else:
+                else:˜
                     bout['text'] = case.nombre_mines_voisines
 
     def test2(self):
@@ -290,9 +290,9 @@ class InterfacePartie(Tk):
         with open("fichier_sauvegarde.txt", "r") as fichier_sauvegarde:
             donnees = json.load(fichier_sauvegarde)
         
-        self.nombre_rangees_partie = donnees['rangees'] ## Refactoring a faire ici!
-        self.nombre_colonnes_partie = donnees['colonnes'] ## Refactoring a faire ici!
-        self.nombre_mines_partie = donnees['mines'] ## Refactoring a faire ici!
+        self.nombre_rangees_partie = donnees['rangees']
+        self.nombre_colonnes_partie = donnees['colonnes']
+        self.nombre_mines_partie = donnees['mines']
         self.tour = donnees['tours'] - 1
 
         self.tableau_mines = Tableau(self.nombre_rangees_partie, self.nombre_colonnes_partie,self.nombre_mines_partie)
