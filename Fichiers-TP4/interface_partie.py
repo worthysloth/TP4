@@ -28,6 +28,7 @@ class InterfacePartie(Tk):
         self.cadre.grid(padx=10, pady=10)
         self.dictionnaire_boutons = {}
         self.defaite = False
+        self.victoire = False
         self.tour = 0
         self.liste_images_nombres = []
         self.chemin = os.path.dirname(__file__)
@@ -47,21 +48,21 @@ class InterfacePartie(Tk):
 
         ## On crée ensuite les différents menus
         menu_partie = Menu(barre_menu, tearoff=0)
-        menu_partie.add_command(label="Nouvelle partie", \
-            command=self.nouvelle_partie)
-        menu_partie.add_command(label="Charger une partie", \
+        menu_partie.add_command(label="Nouvelle partie", 
+        command=self.nouvelle_partie)
+        menu_partie.add_command(label="Charger une partie",
             command=self.charger_partie)
-        menu_partie.add_command(label="Sauvegarde la partie", \
+        menu_partie.add_command(label="Sauvegarde la partie",
             command=self.sauvegarde_partie)
-        menu_partie.add_command(label="Configurer la partie", \
+        menu_partie.add_command(label="Configurer la partie",
             command = self.configurer_partie)
         menu_partie.add_separator()
         menu_partie.add_command(label="Quitter", command=self.demander_ouinon)
 
         menu_info = Menu(barre_menu, tearoff=0)
-        menu_info.add_command(label="Règlements", \
+        menu_info.add_command(label="Règlements",
             command=self.afficher_intructions)
-        menu_info.add_command(label="Créateurs", \
+        menu_info.add_command(label="Créateurs",
             command=self.afficher_createurs)
 
         ## On ajoute les menus a barre_menu
@@ -127,12 +128,6 @@ class InterfacePartie(Tk):
         self.case_appuyer_colonne = event.widget.colonne_y
         self.devoiler_case()
 
-        # S'il n'y a plus de case à dévoiler, la partie se termine et la
-        # solution est affichée
-        if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and \
-            not self.defaite:
-            self.afficher_victoire()
-
     def devoiler_case(self):
         """
         Fonction qui dévoile une case. Si la case contient aucune mine, un
@@ -140,7 +135,8 @@ class InterfacePartie(Tk):
         qui n'ont pas de mines.
         """
         # On obtiens la case sur laquelle on appuie
-        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, self.case_appuyer_colonne)
+        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, 
+        self.case_appuyer_colonne)
 
         # On valide que la case n'est pas déjà dévoilée si elle ne l'ai pas,
         # on ajoute un tour au compteur
@@ -163,13 +159,18 @@ class InterfacePartie(Tk):
                         self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
+                # Si on a découvert toutes les mines on gagne
+                if self.tableau_mines.nombre_cases_sans_mine_a_devoiler == 0:
+                    self.afficher_victoire()
+
                 # Si la case n'a pas de mines voisines, on déclenche l'effet
                 # cascade pour dévoiler les case voisines sans mines.
                 if case.nombre_mines_voisines == 0: # Condition d'arrêt
-                    liste_voisin = self.tableau_mines.obtenir_voisins(self.case_appuyer_rangee, self.case_appuyer_colonne)
+                    liste_voisin = self.tableau_mines.obtenir_voisins(
+                        self.case_appuyer_rangee, self.case_appuyer_colonne)
                     for voisin in liste_voisin:
                         rangee, colonne = voisin
-                        case_voisine = self.tableau_mines.obtenir_case(\
+                        case_voisine = self.tableau_mines.obtenir_case(
                             rangee,colonne)
                         if not case_voisine.est_minee:
                             self.case_appuyer_rangee = rangee
@@ -182,11 +183,11 @@ class InterfacePartie(Tk):
         """
         msgbox = Toplevel()
         msgbox.grid()
-        message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!",\
-            anchor='center',justify='center')
+        message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!",
+        anchor='center',justify='center')
         message.grid(row=0, column=0,columnspan=3)
-        bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(),\
-            self.afficher_solution()])
+        bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(),
+        self.afficher_solution()])
         bouton_ok.grid(row=2, column=1)
         self.defaite = True
 
@@ -195,12 +196,13 @@ class InterfacePartie(Tk):
         Fonction qui affiche le message de victoire.
         """
         boite = Toplevel()
-        message = Message(boite, text="Vous avez gagné! Appuyer sur OK!",\
-            anchor='center',justify='center')
+        message = Message(boite, text="Vous avez gagné! Appuyer sur OK!",
+        anchor='center',justify='center')
         message.pack()
-        bouton_ok = Button(boite, text="Ok",command=lambda:[boite.destroy(),\
-            self.afficher_solution()])
+        bouton_ok = Button(boite, text="Ok",command=lambda:[boite.destroy(),
+        self.afficher_solution()])
         bouton_ok.pack()
+        self.victoire = True
 
     def afficher_solution(self):
         """
@@ -324,8 +326,8 @@ class InterfacePartie(Tk):
         
         # On crée un bouton de soumission
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
-            self.valider_configuration(entry_rangee.get(),entry_colonne.get(),\
-                entry_mine.get(),fenetre_frame)
+            self.valider_configuration(entry_rangee.get(),entry_colonne.get(),
+            entry_mine.get(),fenetre_frame)
         ])
         bouton_soumission.grid(row=4, column = 0, columnspan = 2)
 
@@ -354,15 +356,16 @@ class InterfacePartie(Tk):
                 not self.nombre_colonnes_partie > 0 or\
                     not self.nombre_mines_partie >= 0:
                 raise ValueError
-            elif self.nombre_mines_partie > self.nombre_rangees_partie * self.nombre_colonnes_partie - 1:
+            elif self.nombre_mines_partie > self.nombre_rangees_partie * \
+                self.nombre_colonnes_partie - 1:
                 raise NombreMinesInvalide
             self.nouvelle_partie()
             self.fenetre.destroy()
         except ValueError:
-            self.label_erreur_configuration.config(\
+            self.label_erreur_configuration.config(
                 text="Veuillez entrer\ndes entiers positifs!")
         except NombreMinesInvalide:
-            self.label_erreur_configuration.config(\
+            self.label_erreur_configuration.config(
                 text="Veuillez entrer\nmoins de mines\nque de cases!")
 
     def sauvegarde_partie(self):
@@ -426,7 +429,7 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
-                bouton.bind('<Button-3>', self.Red_Flag)
+                bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
                 case.est_minee = donnees['tableau'][f"({i+1}, {j+1})"]['minee']
@@ -439,7 +442,8 @@ class InterfacePartie(Tk):
                     if case.est_minee:
                         bouton['image'] = self.image_bombe
                     else:
-                        bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
+                        bouton['image'] = self.liste_images_nombres\
+                            [case.nombre_mines_voisines]
 
     def afficher_createurs(self):
         """
@@ -465,7 +469,7 @@ class InterfacePartie(Tk):
         bouton_drapeau = event.widget
 
         # On retrouve la case du bouton
-        case = self.tableau_mines.obtenir_case(\
+        case = self.tableau_mines.obtenir_case(
             bouton_drapeau.rangee_x, bouton_drapeau.colonne_y)
 
         # Si le bouton à déjà un drapeau, on enlève le drapeau
