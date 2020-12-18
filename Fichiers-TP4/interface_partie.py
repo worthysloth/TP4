@@ -10,6 +10,7 @@ from bouton_case import BoutonCase
 import os
 import json
 import time
+import winsound
 from random import randrange
 
 class InterfacePartie(Tk):
@@ -39,7 +40,7 @@ class InterfacePartie(Tk):
 
         ##Chemin pour la fonction Red_Flag
         Path = os.path.dirname(__file__)
-        RedFlag = os.path.join(Path, 'images\\flag2.png')
+        RedFlag = os.path.join(Path, 'images/flag2.png')
         self.imageflag = PhotoImage(file = RedFlag)
 
         ## Bloc qui ajoute un menu ======================================================================
@@ -186,9 +187,19 @@ class InterfacePartie(Tk):
             for j in range(self.tableau_mines.dimension_colonne):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
-                bouton.bind('<Button-1>', self.devoiler_case)
+
+                
+                bouton.bind('<Button-1>', self.devoiler_case, self.play)
+
                 bouton.bind('<Button-3>', self.Red_Flag)
+
+                
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
+
+    def play(self):
+        print("pew pew pew pew")
+        winsound.PlaySound('son/sf_laser_15.wav', winsound.SND_FILENAME)
+
 
     def demander_ouinon(self):
         """Auteur: David
