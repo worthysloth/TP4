@@ -466,6 +466,7 @@ class InterfacePartie(Tk):
             donnees (dict): Dictionnaire contenant les données à sauvegarder
         """
         # On ouvre le fichier de sauvegarde et on écrit les données
+        os.chdir(os.path.join(self.chemin,"saves"))
         with open(f"{nom}.json", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
 
@@ -475,7 +476,7 @@ class InterfacePartie(Tk):
         Fonction qui charge une partie à partir d'un fichier texte de
         sauvegarde. On valide aussi que le fichier existe.
         """
-        fichier_sauvegarde = filedialog.askopenfile(mode='r')
+        fichier_sauvegarde = filedialog.askopenfile(mode='r', initialdir=os.path.join(self.chemin, "saves"))
         # On détruit le cadre qu'on avait au début
         self.cadre.destroy()
         self.cadre = Frame(self)
