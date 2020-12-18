@@ -240,6 +240,7 @@ class InterfacePartie(Tk):
         self.fenetre = Toplevel()
         self.fenetre.wm_title('Configuration de la partie')
         self.fenetre.geometry("%dx%d%+d%+d" % (150, 200, 0, 0))
+        self.fenetre.resizable(width = 0,height=0)
         
         fenetre_frame = Frame(self.fenetre)
         fenetre_frame.grid(padx=15, pady=10)
