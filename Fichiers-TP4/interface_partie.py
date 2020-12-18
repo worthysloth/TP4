@@ -97,8 +97,9 @@ class InterfacePartie(Tk):
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
-        self.label_temps.after(1000,lambda:[self.maj_choronometre(),self.afficher_chronometre()])
-
+        self.label_temps.after(1000,self.maj_choronometre())
+        # if not self.defaite:
+        #     self.afficher_chronometre()
     def maj_choronometre(self):
         self.temps += 1
 
@@ -316,7 +317,7 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
 
-        son_joue = sa.WaveObject.from_wave_file(self.musiqueconfig).play()
+        # son_joue = sa.WaveObject.from_wave_file(self.musiqueconfig).play()
 
         # On crée un label pour le message d'erreur
         self.label_erreur_configuration = Label(fenetre_frame, text='')
@@ -324,10 +325,9 @@ class InterfacePartie(Tk):
         
         # On crée un bouton de soumission
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:
-            [self.valider_configuration(entry_rangee.get(),entry_colonne.get(),
+            self.valider_configuration(entry_rangee.get(),entry_colonne.get(),
             entry_mine.get(),fenetre_frame),
-            son_joue.stop()
-            ]
+            #son_joue.stop()
         )
         bouton_soumission.grid(row=4, column = 0, columnspan = 2)
 
