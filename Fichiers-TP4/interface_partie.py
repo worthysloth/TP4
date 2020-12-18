@@ -86,7 +86,7 @@ class InterfacePartie(Tk):
 
     def ajouter_tour(self):
         """
-        Fonction affiche et ajoute un tour au compteur
+        Fonction qui compte le nombre de tour dans le jeu
         """
         self.label_tour.destroy()
         self.label_tour = Label(self, text=f"Tour#{self.tour}", width=10)
@@ -94,6 +94,9 @@ class InterfacePartie(Tk):
         self.tour += 1
 
     def afficher_chronometre(self):
+        """
+        Fonction qui initialise le chronometre de jeu
+        """
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
@@ -101,6 +104,9 @@ class InterfacePartie(Tk):
         # if not self.defaite:
         #     self.afficher_chronometre()
     def maj_choronometre(self):
+        """
+        Fonction qui met à jour le chronometre
+        """
         self.temps += 1
 
     def trouver_case(self,event):
@@ -114,11 +120,13 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
+        #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
         if not self.tableau_mines.obtenir_case(\
             self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee\
                 and not self.tableau_mines.obtenir_case(\
                     self.case_appuyer_rangee,self.case_appuyer_colonne).est_minee:
             self.ajouter_tour()
+            #Execution du son
             sa.WaveObject.from_wave_file(self.sondevoile).play()
         self.devoiler_case()
 
@@ -176,27 +184,35 @@ class InterfacePartie(Tk):
         """
         Fonction qui affiche le message de défaite.
         """
+        # Attributs
         msgbox = Toplevel()
         msgbox.grid()
+        # Message qui nous affiche la défaite et 
+        # appelle la fonction afficher_solution
         message = Message(msgbox, text="Vous avez perdu! Appuyer sur OK!",
         anchor='center',justify='center')
         message.grid(row=0, column=0,columnspan=3)
         bouton_ok = Button(msgbox, text="Ok",command=lambda:[msgbox.destroy(),
         self.afficher_solution()])
         bouton_ok.grid(row=2, column=1)
+        #On défini defaite à True
         self.defaite = True
 
     def afficher_victoire(self):
         """
         Fonction qui affiche le message de victoire.
         """
+        # Attributs
         boite = Toplevel()
+        #Message qui affiche notre victoire et appelle la fonction 
+        #afficher_solution
         message = Message(boite, text="Vous avez gagné! Appuyer sur OK!",
         anchor='center',justify='center')
         message.pack()
         bouton_ok = Button(boite, text="Ok",command=lambda:[boite.destroy(),
         self.afficher_solution()])
         bouton_ok.pack()
+        #On defini victoire à True
         self.victoire = True
 
     def afficher_solution(self):
@@ -244,17 +260,17 @@ class InterfacePartie(Tk):
         self.afficher_chronometre()
 
     def demander_ouinon(self):
-        """Auteur: David
-            Fonction qui demande à l'utilisateur s'il veut vraiment quitter le 
-            jeu. Si oui, le jeu termine.
+        """
+        Fonction qui demande à l'utilisateur s'il veut vraiment quitter le 
+        jeu. Si oui, le jeu termine.
         """
         if messagebox.askyesno(title="Quitter",\
             message="Voulez-vous vraiment quitter ?"):
             self.destroy()
 
     def afficher_intructions(self):
-        """Auteur: Aryanne
-            Fonction qui affiche les instructions du jeu.
+        """
+        Fonction qui affiche les instructions du jeu.
         """
         regle = """Les règles du jeu sont les suivantes :
         1. Si le joueur choisit une case où une mine est cachée, 
@@ -466,9 +482,6 @@ class InterfacePartie(Tk):
         Args:
             event (<Button-3>) : Clic sur la souris droite de la case de notre 
                                  choix.
-
-        Return:
-            Aucun
         """
 
         # On retrouve le bouton sur lequel on a appuyé
