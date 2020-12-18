@@ -377,9 +377,11 @@ class InterfacePartie(Tk):
                 raise NombreMinesInvalide
             self.fenetre.destroy()
             self.nouvelle_partie()
+        #Si l'utilisateur entre un entiers non positifs on soulève ValueError
         except ValueError:
             self.label_erreur_configuration.config(
                 text="Veuillez entrer\ndes entiers positifs!")
+        #Si l'utilisateur entre un nombre de mines plus élevé que de case, on soulève NombreMinesInvalide
         except NombreMinesInvalide:
             self.label_erreur_configuration.config(
                 text="Veuillez entrer\nmoins de mines\nque de cases!")
@@ -399,6 +401,7 @@ class InterfacePartie(Tk):
         donnees['tours'] = self.tour
         donnees['tableau'] = {}
         donnees['defaite'] = self.defaite
+        #On défini les données dans le dictionnaire
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
@@ -447,7 +450,7 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
-
+                #On extrait les données
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
                 self.dictionnaire_boutons[(i+1, j+1)].drapeau = \
                     donnees['tableau'][f"({i+1}, {j+1})"]['drapeau']
@@ -457,6 +460,7 @@ class InterfacePartie(Tk):
                     ['devoilee']
                 case.nombre_mines_voisines = donnees['tableau']\
                     [f"({i+1}, {j+1})"]['nombre_voisins']
+                #On reinitialise les photos des case selon leurs statut
                 if case.est_devoilee:
                     self.tableau_mines.devoiler_case(i+1, j+1)
                     if case.est_minee:
