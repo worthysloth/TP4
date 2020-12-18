@@ -143,6 +143,11 @@ class Tableau():
 
     def initialiser_tableau(self):
         """
+
+        MAYBE NOT GOOD
+
+
+
         Initialise le tableau à son contenu initial en suivant les étapes 
         suivantes:
             1) On crée chacune des cases du tableau 
@@ -196,6 +201,10 @@ class Tableau():
 
     def coordonnees_dans_limite(self, rangee_x, colonne_y):
         """
+
+        MAYBE NOT GOOD
+
+
         Valide que les coordonées entrées sont à l'intérieur des limites du 
         tableaux créé.
         Args:
@@ -214,6 +223,11 @@ class Tableau():
 
     def valider_coordonnees_a_devoiler(self, rangee_x, colonne_y):
         """
+
+        MAYBE NOT GOOD
+
+
+
         Valide que les coordonnées reçues en argument sont celles d'une case que
         l'on peut dévoiler 
         (donc que les coordonnées sont valides et que la case correspondante n'a
@@ -240,6 +254,12 @@ class Tableau():
         
     def afficher_solution(self):
         """
+
+
+        MAYBE NOT GOOD
+
+
+
         Méthode qui affiche le tableau de la solution à l'écran. La solution
         montre les mines pour les cases qui en contiennent et la valeur du
         nombre de mines voisines pour les autres cases.
@@ -284,6 +304,16 @@ class Tableau():
          
     def afficher_tableau(self):
         """
+
+
+
+
+        MAYBE NOT GOOD
+
+
+
+
+
         Méthode qui affiche le tableau à l'écran. Le tableau montre le contenu 
         des cases dévoilées (mine ou nombre de mines voisines) ou un carré pour
         les cases non dévoilées.
@@ -333,6 +363,9 @@ class Tableau():
 
     def contient_cases_a_devoiler(self):
         """
+
+        MAYBE NOT GOOD
+
         Méthode qui indique si le tableau contient des cases à dévoiler.
         
         Returns:
@@ -343,6 +376,10 @@ class Tableau():
 
     def devoiler_case(self, rangee_x, colonne_y):
         """
+
+        MAYBE NOT GOOD
+
+
         Méthode qui dévoile le contenu de la case dont les coordonnées sont
         reçues en argument. Si la case ne contient pas de mine, on décrémente
         l'attribut qui représente le nombre de cases sans mine à dévoiler. Aussi
@@ -382,6 +419,11 @@ class Tableau():
         
     def contient_mine(self, rangee_x, colonne_y):
         """
+
+        MAYBE NOT GOOD
+
+
+
         Méthode qui vérifie si la case dont les coordonnées sont reçues en 
         argument contient une mine.
         
