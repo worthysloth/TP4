@@ -181,6 +181,7 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-3>', self.mouseClick)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
     def demander_ouinon(self):
