@@ -100,7 +100,6 @@ class InterfacePartie(Tk):
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
-<<<<<<< HEAD
         if self.temps == 0:
             print('0')
             self.maj_chronometre()
@@ -109,18 +108,9 @@ class InterfacePartie(Tk):
             self.label_temps.after(1000,self.maj_chronometre)
         
     def maj_chronometre(self):
+        Fonction qui met à jour le chronometre
         self.temps += 1        
         self.afficher_chronometre()
-=======
-        self.label_temps.after(1000,self.maj_choronometre())
-        # if not self.defaite:
-        #     self.afficher_chronometre()
-    def maj_choronometre(self):
-        """
-        Fonction qui met à jour le chronometre
-        """
-        self.temps += 1
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
 
     def trouver_case(self,event):
         """
@@ -133,16 +123,9 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
-<<<<<<< HEAD
+        #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
         case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
         if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
-=======
-        #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
-        if not self.tableau_mines.obtenir_case(\
-            self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee\
-                and not self.tableau_mines.obtenir_case(\
-                    self.case_appuyer_rangee,self.case_appuyer_colonne).est_minee:
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
             self.ajouter_tour()
             #Execution du son
             sa.WaveObject.from_wave_file(self.sondevoile).play()
@@ -418,11 +401,8 @@ class InterfacePartie(Tk):
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
         donnees['defaite'] = self.defaite
-<<<<<<< HEAD
         donnees['tableau'] = {}
-=======
         #On défini les données dans le dictionnaire
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
