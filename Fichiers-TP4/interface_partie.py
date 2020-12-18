@@ -8,14 +8,44 @@ from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label,\
     Menu, Toplevel, Message
 from tableau import Tableau
 from bouton_case import BoutonCase
+
 import os
 import json
 import time
-from random import randrange
 import simpleaudio as sa
 
 class InterfacePartie(Tk):
+    """
+    Jeu de démineur implémenté avec Tkinter
+
+    Args:
+        Tk (): module de tkinter pour l'affichage du jeu
+    """
     def __init__(self):
+        """
+        Initialisation de l'objet tableau
+
+        Attributes:
+            nombre_rangees_partie (int): Nombre de rangees dans la partie
+            nombre_colonnes_partie (int) : Nombre de colonnes dans la partie
+            nombre_mines_partie (int) : Nombre de mines dans la partie
+            cadre (Frame) : Cadre du jeu Tkinter
+            dictionnaire_boutons (dict): Dictionnaire contenant tout 
+                                         les boutons du jeu
+            defaite (bool) : État du jeu au niveau de la defaite
+            victoire (bool) : État du jeu au niveau de la victoire
+            tour (int) : Valeur du nombre de tour dans le jeu
+            temps (int) : Valeur du temps dans le jeu
+            liste_images_nombres (list) : Liste contetnant les images concernant 
+                                            les nombres seulement
+            chemin (str): Chemin d'accès du fichier principal
+            image_drapeau (PhotoImage) : Image contenant le drapeau
+            image_bombe (PhotoImage) : Image contenant la bombe
+            sondevoile (str) : Son pour le devoilement des cases
+            sonexplosion (str) : Son pour le devoilement des mines
+            
+
+        """
         super().__init__()
 
         # Nom de la fenêtre.
@@ -40,7 +70,6 @@ class InterfacePartie(Tk):
         self.image_bombe = PhotoImage(file = chemin_bombe)
         self.sondevoile = os.path.join(self.chemin, 'son/Gun.wav')
         self.sonexplosion = os.path.join(self.chemin, 'son/explosion2.wav')
-        self.musiqueconfig = os.path.join(self.chemin, 'son/wiimusic.wav')
         ## Importation des images que nous allons utiliser
         for i in range(8):
             chemin_img = os.path.join(self.chemin, f'images/tile_{str(i)}.png')
@@ -335,8 +364,6 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
 
-        # son_joue = sa.WaveObject.from_wave_file(self.musiqueconfig).play()
-
         # On crée un label pour le message d'erreur
         self.label_erreur_configuration = Label(fenetre_frame, text='')
         self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
@@ -344,9 +371,7 @@ class InterfacePartie(Tk):
         # On crée un bouton de soumission
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:
             self.valider_configuration(entry_rangee.get(),entry_colonne.get(),
-            entry_mine.get(),fenetre_frame),
-            #son_joue.stop()
-        )
+            entry_mine.get(),fenetre_frame))
         bouton_soumission.grid(row=4, column = 0, columnspan = 2)
 
     def valider_configuration(self, nb_rangees, nb_colonnes, nb_mines, widget):
@@ -396,7 +421,6 @@ class InterfacePartie(Tk):
 
         # On crée un dictionnaire de données pour y mettre l'information
         donnees = {}
-
         # On remplit le dictionnaire
         donnees['rangees'] = self.nombre_rangees_partie
         donnees['colonnes'] = self.nombre_colonnes_partie
