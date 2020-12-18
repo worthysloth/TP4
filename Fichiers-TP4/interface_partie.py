@@ -97,11 +97,16 @@ class InterfacePartie(Tk):
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
-        self.label_temps.after(1000,self.maj_choronometre())
-        # if not self.defaite:
-        #     self.afficher_chronometre()
-    def maj_choronometre(self):
-        self.temps += 1
+        if self.temps == 0:
+            print('0')
+            self.maj_chronometre()
+            self.afficher_chronometre()
+        else:
+            self.label_temps.after(1000,self.maj_chronometre)
+        
+    def maj_chronometre(self):
+        self.temps += 1        
+        self.afficher_chronometre()
 
     def trouver_case(self,event):
         """
@@ -114,32 +119,30 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
-        if not self.tableau_mines.obtenir_case(\
-            self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee\
-                and not self.tableau_mines.obtenir_case(\
-                    self.case_appuyer_rangee,self.case_appuyer_colonne).est_minee:
+        case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
+        if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
             self.ajouter_tour()
             sa.WaveObject.from_wave_file(self.sondevoile).play()
-        self.devoiler_case()
+        self.devoiler_case(case_appuyer)
 
-    def devoiler_case(self):
+    def devoiler_case(self, case_a_devoiler):
         """
         Fonction qui dévoile une case. Si la case contient aucune mine, un
         effet de cascade est déclenché pour dévoiler les autres cases voisines
         qui n'ont pas de mines.
         """
         # On obtiens la case sur laquelle on appuie
-        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, 
-        self.case_appuyer_colonne)
+        # case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, 
+        # self.case_appuyer_colonne)
 
         # On valide que la case n'est pas déjà dévoilée si elle ne l'ai pas,
         # on ajoute un tour au compteur
-        if not case.est_devoilee and not self.defaite:
-            case.devoiler()
+        if not case_a_devoiler.est_devoilee and not self.defaite:
+            case_a_devoiler.devoiler()
 
             # On vérifie si la case est minée. Si oui, on affiche une bombe et
             # on affiche un message de défaite
-            if case.est_minee:
+            if case_a_devoiler.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
                 sa.WaveObject.from_wave_file(self.sonexplosion).play()
@@ -147,10 +150,10 @@ class InterfacePartie(Tk):
 
             # Si la case n'est pas minée, on met l'image correspondante au
             # nombre de mines voisines de cette case
-            elif not case.est_minee:
+            elif not case_a_devoiler.est_minee and case_a_devoiler.est_devoilee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = \
-                        self.liste_images_nombres[case.nombre_mines_voisines]
+                        self.liste_images_nombres[case_a_devoiler.nombre_mines_voisines]
                 
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
@@ -160,7 +163,7 @@ class InterfacePartie(Tk):
 
                 # Si la case n'a pas de mines voisines, on déclenche l'effet
                 # cascade pour dévoiler les case voisines sans mines.
-                if case.nombre_mines_voisines == 0: # Condition d'arrêt
+                if case_a_devoiler.nombre_mines_voisines == 0: # Condition d'arrêt
                     liste_voisin = self.tableau_mines.obtenir_voisins(
                         self.case_appuyer_rangee, self.case_appuyer_colonne)
                     for voisin in liste_voisin:
@@ -170,7 +173,8 @@ class InterfacePartie(Tk):
                         if not case_voisine.est_minee:
                             self.case_appuyer_rangee = rangee
                             self.case_appuyer_colonne = colonne
-                            self.devoiler_case() # Récursion
+                            nouvelle_case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, self.case_appuyer_colonne)
+                            self.devoiler_case(nouvelle_case) # Récursion
                             
     def afficher_defaite(self):
         """
@@ -221,12 +225,12 @@ class InterfacePartie(Tk):
         """
         Fonciton qui initialise une nouvelle partie.
         """
-        # self.countdown(5000)
         self.dictionnaire_boutons = {}
         self.cadre.destroy()
         self.tour = 0
         self.temps = 0
         self.ajouter_tour()
+        self.afficher_chronometre()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
         self.defaite = False
@@ -241,7 +245,6 @@ class InterfacePartie(Tk):
                 bouton.bind('<Button-1>', self.trouver_case)
                 bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
-        self.afficher_chronometre()
 
     def demander_ouinon(self):
         """Auteur: David
@@ -381,8 +384,8 @@ class InterfacePartie(Tk):
         donnees['colonnes'] = self.nombre_colonnes_partie
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
-        donnees['tableau'] = {}
         donnees['defaite'] = self.defaite
+        donnees['tableau'] = {}
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
@@ -419,11 +422,11 @@ class InterfacePartie(Tk):
         self.nombre_mines_partie = donnees['mines']
         self.tour = donnees['tours'] - 1
         self.defaite = donnees['defaite']
-        self.tableau_mines = Tableau(self.nombre_rangees_partie,\
+        self.tableau_mines = Tableau(self.nombre_rangees_partie,
             self.nombre_colonnes_partie,self.nombre_mines_partie)
-        self.countdown(5000)
-        self.ajouter_tour()
 
+        self.ajouter_tour()
+        self.afficher_chronometre()
         # On recrée le tableau sauvegardé
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -443,6 +446,7 @@ class InterfacePartie(Tk):
                     [f"({i+1}, {j+1})"]['nombre_voisins']
                 if case.est_devoilee:
                     self.tableau_mines.devoiler_case(i+1, j+1)
+                    self.devoiler_case(case)
                     if case.est_minee:
                         bouton['image'] = self.image_bombe
                     else:
