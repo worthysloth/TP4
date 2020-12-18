@@ -101,7 +101,7 @@ class InterfacePartie(Tk):
         """
         Fonction affiche et ajoute un tour au compteur
         """
-        self.label_tour.destroy()
+        # self.label_tour.destroy()
         self.label_tour = Label(self, text=f"Tour#{self.tour}", width=10)
         self.label_tour.grid(row=1,column=0)
         self.tour += 1
@@ -151,6 +151,7 @@ class InterfacePartie(Tk):
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
         if not self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee:
+            self.label_tour.destroy()
             self.ajouter_tour()
         self.devoiler_case()
 
@@ -469,7 +470,7 @@ class InterfacePartie(Tk):
         self.defaite = donnees['defaite']
         self.tableau_mines = Tableau(self.nombre_rangees_partie,\
             self.nombre_colonnes_partie,self.nombre_mines_partie)
-        self.countdown(5000)
+        self.afficher_chronometre()
         self.ajouter_tour()
 
         # On recrée le tableau sauvegardé
