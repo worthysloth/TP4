@@ -12,6 +12,7 @@ import os
 import json
 import time
 from random import randrange
+import simpleaudio as sa
 
 class InterfacePartie(Tk):
     def __init__(self):
@@ -37,6 +38,9 @@ class InterfacePartie(Tk):
         self.image_drapeau = PhotoImage(file = chemin_red_flag)
         chemin_bombe = os.path.join(self.chemin, 'images/bomb2.png')
         self.image_bombe = PhotoImage(file = chemin_bombe)
+        self.sondevoile = os.path.join(self.chemin, 'son/Gun.wav')
+        self.sonexplosion = os.path.join(self.chemin, 'son/explosion2.wav')
+        self.musiqueconfig = os.path.join(self.chemin, 'son/wiimusic.wav')
         ## Importation des images que nous allons utiliser
         for i in range(8):
             chemin_img = os.path.join(self.chemin, f'images/tile_{str(i)}.png')
@@ -76,7 +80,6 @@ class InterfacePartie(Tk):
         # On crée les labels qu'on va devoir utilise (initialisation vide)
         self.label_temps = Label(self)
         self.label_tour = Label(self)
-        # self.countdown(5000)
 
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
@@ -98,30 +101,6 @@ class InterfacePartie(Tk):
 
     def maj_choronometre(self):
         self.temps += 1
-    # def countdown(self, temps_restant):
-    #     """
-    #     Fonction pour le mode "contre-la-montre" qui affiche la solution
-    #     si jamais l'utilisateur ne termine pas avant le temps impartie.
-
-    #     Args:
-    #         remaining ([type], optional): [description]. Defaults to None.
-
-    #     A faire:
-    #     -S'assurer que la solution s'affiche dans tkinter et non CMD
-    #     -replacer le timer quelque part de nice
-    #     -Proposer au user de choisir ce mode
-    #     """
-    #     self.label = Label(self, text=f"Temps: {self.temps}", width=10)
-    #     self.label.grid()
-        # if remaining is not None:
-        #     self.remaining = remaining
-
-        # if self.remaining <= 0:
-        #     self.label.configure(text="Temps écoulé")
-        # else:
-        #     self.label.configure(text="%d" % self.remaining)
-        #     self.remaining = self.remaining - 1
-        #     self.after(1000, self.countdown)
 
     def trouver_case(self,event):
         """
@@ -158,6 +137,7 @@ class InterfacePartie(Tk):
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
+                sa.WaveObject.from_wave_file(self.sonexplosion).play()
                 self.afficher_defaite()
 
             # Si la case n'est pas minée, on met l'image correspondante au
@@ -166,6 +146,7 @@ class InterfacePartie(Tk):
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = \
                         self.liste_images_nombres[case.nombre_mines_voisines]
+                sa.WaveObject.from_wave_file(self.sondevoile).play()
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
                 # Si on a découvert toutes les mines on gagne
@@ -331,15 +312,17 @@ class InterfacePartie(Tk):
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
 
+        sa.WaveObject.from_wave_file(self.musiqueconfig).play()
+
         # On crée un label pour le message d'erreur
         self.label_erreur_configuration = Label(fenetre_frame, text='')
         self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
         
         # On crée un bouton de soumission
-        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
+        bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:
             self.valider_configuration(entry_rangee.get(),entry_colonne.get(),
             entry_mine.get(),fenetre_frame)
-        ])
+        )
         bouton_soumission.grid(row=4, column = 0, columnspan = 2)
 
     def valider_configuration(self, nb_rangees, nb_colonnes, nb_mines, widget):
