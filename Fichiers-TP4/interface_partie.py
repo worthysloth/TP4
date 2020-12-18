@@ -8,9 +8,13 @@ from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label,\
     Menu, Toplevel, Message
 from tableau import Tableau
 from bouton_case import BoutonCase
+
+
 import os
 import json
 import time
+import simpleaudio as sa
+
 from random import randrange
 
 class InterfacePartie(Tk):
@@ -44,6 +48,18 @@ class InterfacePartie(Tk):
             self.liste_images_nombres.append(image_actuelle)
             
 
+
+        ##Chemin pour la fonction Red_Flag
+        Path = os.path.dirname(__file__)
+        RedFlag = os.path.join(Path, 'images/flag2.png')
+        self.imageflag = PhotoImage(file = RedFlag)
+
+        ##Chemin pour son
+        self.sondevoile = os.path.join(Path, 'son/Gun.wav')
+        self.sonexplosion = os.path.join(Path, 'son/explosion2.wav')
+        self.musiqueconfig = os.path.join(Path, 'son/wiimusic.wav')
+
+        ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
 
@@ -80,7 +96,7 @@ class InterfacePartie(Tk):
 
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
-
+    
     def ajouter_tour(self):
         """
         Fonction affiche et ajoute un tour au compteur
@@ -158,6 +174,15 @@ class InterfacePartie(Tk):
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
+                bouton['image'] = self.image_bombe
+                bouton['height'] = self.image_bombe.height()
+                bouton['width'] = self.image_bombe.width()
+                #Son explosiomn
+                boutondefaite = self.sonexplosion
+                wave_obj = sa.WaveObject.from_wave_file(boutondefaite)
+                wave_obj.play()
+
+
                 self.afficher_defaite()
 
             # Si la case n'est pas minée, on met l'image correspondante au
@@ -167,6 +192,11 @@ class InterfacePartie(Tk):
                     self.case_appuyer_colonne]['image'] = \
                         self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+                #Son defaite
+                boutonson = self.sondevoile
+                wave_obj = sa.WaveObject.from_wave_file(boutonson)
+                wave_obj.play()
+                
 
                 # Si on a découvert toutes les mines on gagne
                 if self.tableau_mines.nombre_cases_sans_mine_a_devoiler == 0:
@@ -257,6 +287,9 @@ class InterfacePartie(Tk):
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
         self.afficher_chronometre()
 
+    
+
+
     def demander_ouinon(self):
         """Auteur: David
             Fonction qui demande à l'utilisateur s'il veut vraiment quitter le 
@@ -332,6 +365,10 @@ class InterfacePartie(Tk):
         entry_mine.grid(row = 2, column = 1)
 
         # On crée un label pour le message d'erreur
+        musiquewii = self.musiqueconfig
+        wave_obj = sa.WaveObject.from_wave_file(musiquewii)
+        wave_obj.play()
+
         self.label_erreur_configuration = Label(fenetre_frame, text='')
         self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
         
