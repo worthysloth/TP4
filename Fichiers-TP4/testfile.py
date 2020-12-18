@@ -1,16 +1,10 @@
-import tkinter as tk
-import winsound
+from tkinter import *
+from winsound import *
 
-mywindow = tk.Tk()
+root = Tk() # create tkinter window
 
-def buttonPress():
-    winsound.PlaySound('sf_laser_15.wav', winsound.SND_FILENAME)
-    print("Button Pressed!!")
+play = lambda: PlaySound('sf_laser_15.wav', SND_FILENAME)
+button = Button(root, text = 'Play', command = play)
 
-# Button
-button = tk.Button(mywindow,text='Press',command=buttonPress)
-button.grid(row=1,column=1)
-
-# Title Bar Icon
-#mywindow.iconbitmap('birdy_icon.ico')
-mywindow.mainloop()
+button.pack()
+root.mainloop()

@@ -7,10 +7,14 @@ N'oubliez pas de commenter le code!
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Menu, Toplevel, Message, StringVar
 from tableau import Tableau
 from bouton_case import BoutonCase
+
+from winsound import *
+
 import os
 import json
 import time
 import winsound
+
 from random import randrange
 
 class InterfacePartie(Tk):
@@ -82,7 +86,7 @@ class InterfacePartie(Tk):
         self.image_bombe = PhotoImage(file = chemin_bombe)
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
-
+    
     def ajouter_tour(self):
         self.labeltour.destroy()
         self.labeltour = Label(self, text=f"Tour#{self.tour}", width=10)
@@ -189,16 +193,17 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
 
                 
-                bouton.bind('<Button-1>', self.devoiler_case, self.play)
-
+                bouton.bind('<Button-1>', self.devoiler_case)
+                play2 = winsound.PlaySound("sf_laser_15", winsound.SND_FILENAME)
+                #play2 = winsound.PlaySound("sf_laser_15.wav", winsound.SND_ASYNC)
+                #play2 = lambda: PlaySound('son/sf_laser_15.mp3', SND_FILENAME)
                 bouton.bind('<Button-3>', self.Red_Flag)
+                bouton.bind('<Button-2>', play2)
+
 
                 
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
-    def play(self):
-        print("pew pew pew pew")
-        winsound.PlaySound('son/sf_laser_15.wav', winsound.SND_FILENAME)
 
 
     def demander_ouinon(self):
