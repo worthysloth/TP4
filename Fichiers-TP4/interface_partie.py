@@ -265,22 +265,24 @@ class InterfacePartie(Tk):
         self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
 
         bouton_soumission = Button(fenetre_frame, text="Go!", command=lambda:[
-            self.maj_donnees(entry_rangee.get(),entry_colonne.get(),entry_mine.get()),
             self.valider_configuration(entry_rangee.get(),entry_colonne.get(),entry_mine.get(),fenetre_frame)
         ])
         bouton_soumission.grid(row=4, column = 0, columnspan = 2)
 
     def valider_configuration(self, nb_rangees, nb_colonnes, nb_mines, widget):
-        # AJOUTER EQUATION POUR NOMBRE DEMINE AVEC UN EXCEPT 
         try:
-            if not self.nombre_rangees_partie.isnumeric() or not self.nombre_colonnes_partie.isnumeric() or not self.nombre_mines_partie.isnumeric():
-                raise ValueError 
-
+            self.maj_donnees(int(nb_rangees), int(nb_colonnes), int(nb_mines))
+            if not self.nombre_rangees_partie > 0 or not self.nombre_colonnes_partie > 0 or not self.nombre_mines_partie > 0:
+                raise ValueError
+            elif self.nombre_mines_partie > self.nombre_rangees_partie * self.nombre_colonnes_partie - 1:
+                raise NombreMinesInvalide
             self.nouvelle_partie()
             print("🏆")
             self.fenetre.destroy()
         except ValueError:
-            self.label_erreur_configuration.config(text="ERREUR")
+            self.label_erreur_configuration.config(text="Veuillez entrer\ndes entiers positifs!")
+        except NombreMinesInvalide:
+            self.label_erreur_configuration.config(text="Veuillez entrer\nmoins de mines\nque de cases!")
 
     def sauvegarde_partie(self):
         donnees = {}
@@ -359,7 +361,7 @@ class InterfacePartie(Tk):
         boutonflag = event.widget
         case = self.tableau_mines.obtenir_case(boutonflag.rangee_x, boutonflag.colonne_y)
         if boutonflag.red_flag:
-            
+            print('FFF')
             boutonflag.reinitialiser_image()
             boutonflag.red_flag = not boutonflag.red_flag
         elif not boutonflag.red_flag and not case.est_devoilee and not self.defaite:
@@ -371,5 +373,5 @@ class InterfacePartie(Tk):
 
 
     
-            
-        
+class NombreMinesInvalide(Exception):
+    pass
