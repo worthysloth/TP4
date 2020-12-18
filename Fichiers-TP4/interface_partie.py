@@ -47,7 +47,6 @@ class InterfacePartie(Tk):
             image_actuelle = PhotoImage(file = chemin_img)
             self.liste_images_nombres.append(image_actuelle)
             
-
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
 
@@ -100,7 +99,6 @@ class InterfacePartie(Tk):
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
-<<<<<<< HEAD
         if self.temps == 0:
             print('0')
             self.maj_chronometre()
@@ -111,16 +109,6 @@ class InterfacePartie(Tk):
     def maj_chronometre(self):
         self.temps += 1        
         self.afficher_chronometre()
-=======
-        self.label_temps.after(1000,self.maj_choronometre())
-        # if not self.defaite:
-        #     self.afficher_chronometre()
-    def maj_choronometre(self):
-        """
-        Fonction qui met à jour le chronometre
-        """
-        self.temps += 1
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
 
     def trouver_case(self,event):
         """
@@ -133,39 +121,30 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
-<<<<<<< HEAD
         case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
         if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
-=======
-        #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
-        if not self.tableau_mines.obtenir_case(\
-            self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee\
-                and not self.tableau_mines.obtenir_case(\
-                    self.case_appuyer_rangee,self.case_appuyer_colonne).est_minee:
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
             self.ajouter_tour()
             #Execution du son
             sa.WaveObject.from_wave_file(self.sondevoile).play()
-        self.devoiler_case(case_appuyer)
+        self.devoiler_case()
 
-    def devoiler_case(self, case_a_devoiler):
+    def devoiler_case(self):
         """
         Fonction qui dévoile une case. Si la case contient aucune mine, un
         effet de cascade est déclenché pour dévoiler les autres cases voisines
         qui n'ont pas de mines.
         """
         # On obtiens la case sur laquelle on appuie
-        # case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, 
-        # self.case_appuyer_colonne)
+        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
 
         # On valide que la case n'est pas déjà dévoilée si elle ne l'ai pas,
         # on ajoute un tour au compteur
-        if not case_a_devoiler.est_devoilee and not self.defaite:
-            case_a_devoiler.devoiler()
+        if not case.est_devoilee and not self.defaite:
+            case.devoiler()
 
             # On vérifie si la case est minée. Si oui, on affiche une bombe et
             # on affiche un message de défaite
-            if case_a_devoiler.est_minee:
+            if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
                 sa.WaveObject.from_wave_file(self.sonexplosion).play()
@@ -173,10 +152,10 @@ class InterfacePartie(Tk):
 
             # Si la case n'est pas minée, on met l'image correspondante au
             # nombre de mines voisines de cette case
-            elif not case_a_devoiler.est_minee and case_a_devoiler.est_devoilee:
+            elif not case.est_minee and case.est_devoilee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = \
-                        self.liste_images_nombres[case_a_devoiler.nombre_mines_voisines]
+                        self.liste_images_nombres[case.nombre_mines_voisines]
                 
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
@@ -186,7 +165,7 @@ class InterfacePartie(Tk):
 
                 # Si la case n'a pas de mines voisines, on déclenche l'effet
                 # cascade pour dévoiler les case voisines sans mines.
-                if case_a_devoiler.nombre_mines_voisines == 0: # Condition d'arrêt
+                if case.nombre_mines_voisines == 0: # Condition d'arrêt
                     liste_voisin = self.tableau_mines.obtenir_voisins(
                         self.case_appuyer_rangee, self.case_appuyer_colonne)
                     for voisin in liste_voisin:
@@ -196,8 +175,7 @@ class InterfacePartie(Tk):
                         if not case_voisine.est_minee:
                             self.case_appuyer_rangee = rangee
                             self.case_appuyer_colonne = colonne
-                            nouvelle_case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, self.case_appuyer_colonne)
-                            self.devoiler_case(nouvelle_case) # Récursion
+                            self.devoiler_case() # Récursion
                             
     def afficher_defaite(self):
         """
@@ -418,11 +396,7 @@ class InterfacePartie(Tk):
         donnees['mines'] = self.nombre_mines_partie
         donnees['tours'] = self.tour
         donnees['defaite'] = self.defaite
-<<<<<<< HEAD
         donnees['tableau'] = {}
-=======
-        #On défini les données dans le dictionnaire
->>>>>>> baf39d3bb2650cbe4ef88dd9e3f6c529ebd9fba2
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
@@ -484,7 +458,6 @@ class InterfacePartie(Tk):
                 #On reinitialise les photos des case selon leurs statut
                 if case.est_devoilee:
                     self.tableau_mines.devoiler_case(i+1, j+1)
-                    self.devoiler_case(case)
                     if case.est_minee:
                         bouton['image'] = self.image_bombe
                     else:
