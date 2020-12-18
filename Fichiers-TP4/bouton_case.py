@@ -12,14 +12,16 @@ class BoutonCase(Button):
         self.rangee_x = rangee_x
         self.colonne_y = colonne_y
         self.image = PhotoImage(file = self.chemin_image)
-        self.drapeau = False
+        self.relief = "raised"
+        self.red_flag = False
         super().__init__(
         parent,
         image=self.image, 
         padx=1, 
         pady=3, 
         height=24, 
-        width=24
+        width=24, 
+        relief=self.relief
         )
 
     def reinitialiser_image(self):
