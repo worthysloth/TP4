@@ -239,9 +239,10 @@ class InterfacePartie(Tk):
     def configurer_partie(self):
         self.fenetre = Toplevel()
         self.fenetre.wm_title('Configuration de la partie')
+        self.fenetre.geometry("%dx%d%+d%+d" % (150, 200, 0, 0))
         
-        fenetre_frame = Frame(self.fenetre, height = 200, width = 200)
-        fenetre_frame.grid(padx=10, pady=10)
+        fenetre_frame = Frame(self.fenetre)
+        fenetre_frame.grid(padx=15, pady=10)
 
         ## On cree le label et entry pour rangee
         label_rangee = Label(fenetre_frame, text="Rangee: ")
