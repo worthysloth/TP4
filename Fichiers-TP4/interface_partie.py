@@ -113,8 +113,12 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
-        if not self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee:
+        if not self.tableau_mines.obtenir_case(\
+            self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee\
+                and not self.tableau_mines.obtenir_case(\
+                    self.case_appuyer_rangee,self.case_appuyer_colonne).est_minee:
             self.ajouter_tour()
+            sa.WaveObject.from_wave_file(self.sondevoile).play()
         self.devoiler_case()
 
     def devoiler_case(self):
@@ -137,7 +141,6 @@ class InterfacePartie(Tk):
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
-                sa.WaveObject.from_wave_file(self.sonexplosion).play()
                 self.afficher_defaite()
 
             # Si la case n'est pas minée, on met l'image correspondante au
@@ -146,7 +149,6 @@ class InterfacePartie(Tk):
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = \
                         self.liste_images_nombres[case.nombre_mines_voisines]
-                sa.WaveObject.from_wave_file(self.sondevoile).play()
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
                 # Si on a découvert toutes les mines on gagne
