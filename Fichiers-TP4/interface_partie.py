@@ -108,7 +108,9 @@ class InterfacePartie(Tk):
             self.label_temps.after(1000,self.maj_chronometre)
         
     def maj_chronometre(self):
+        """
         Fonction qui met à jour le chronometre
+        """
         self.temps += 1        
         self.afficher_chronometre()
 
