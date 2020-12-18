@@ -220,7 +220,13 @@ class InterfacePartie(Tk):
         Returns:
             None
         """
-        messagebox.showinfo(title= 'Info', message= 'This is how u play')
+        regle = """Les règles du jeu sont les suivantes :
+        1. Si le joueur choisit une case où une mine est cachée, la mine explose! La partie est terminée.
+        2. Si le joueur choisit une case avec un nombre caché, la case est dévoilée et le nombre devient visible.
+        3. Si le joueur choisit une case vide (donc qui n’a ni mine ni nombre caché), il y a un effet en cascade (voir section plus bas) qui fait le dévoilement de toutes les cases vides dans le voisinage jusqu’à ce que la limite du tableau soit atteinte ou qu’une case avec un numéro caché soit atteinte.
+        L’objectif du jeu est d’identifier, par la logique, toutes les cases contenant des mines, sans en déclencher aucune."""
+        messagebox.showinfo(title= 'Info', message= regle)
+        
 
     def maj_donnees(self, nb_rangees, nb_colonnes, nb_mines):
 
