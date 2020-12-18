@@ -7,12 +7,13 @@ import os
 
 class BoutonCase(Button):
     def __init__(self, parent, rangee_x, colonne_y):
-        chemin_fichier = os.path.dirname(__file__)
-        chemin_image = os.path.join(chemin_fichier,'images/tile_not.png')
+        self.chemin_fichier = os.path.dirname(__file__)
+        self.chemin_image = os.path.join(self.chemin_fichier,'images/tile_not.png')
         self.rangee_x = rangee_x
         self.colonne_y = colonne_y
-        self.image = PhotoImage(file = chemin_image)
+        self.image = PhotoImage(file = self.chemin_image)
         self.relief = "raised"
+        self.red_flag = False
         super().__init__(
         parent,
         image=self.image, 
@@ -20,5 +21,8 @@ class BoutonCase(Button):
         pady=3, 
         height=24, 
         width=24, 
-        relief=self.relief)
+        relief=self.relief
+        )
 
+    def reinitialiser_image(self):
+        self['image'] = self.image

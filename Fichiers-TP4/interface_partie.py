@@ -350,8 +350,18 @@ class InterfacePartie(Tk):
         """
         boutonflag = event.widget
         case = self.tableau_mines.obtenir_case(boutonflag.rangee_x, boutonflag.colonne_y)
-        if not case.est_devoilee and not self.defaite:
+        if boutonflag.red_flag:
             
+            boutonflag.reinitialiser_image()
+            boutonflag.red_flag = not boutonflag.red_flag
+        elif not boutonflag.red_flag and not case.est_devoilee and not self.defaite:
+            boutonflag.red_flag = not boutonflag.red_flag
             boutonflag['image'] = self.imageflag
             boutonflag['height'] = self.imageflag.height()
             boutonflag['width'] = self.imageflag.width()
+        print(boutonflag.red_flag)
+
+
+    
+            
+        
