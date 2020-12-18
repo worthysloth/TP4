@@ -36,6 +36,12 @@ class InterfacePartie(Tk):
             image_actuelle = PhotoImage(file = chemin_img)
             self.liste_images_nombres.append(image_actuelle)
 
+
+        ##Chemin pour la fonction Red_Flag
+        Path = os.path.dirname(__file__)
+        RedFlag = os.path.join(Path, 'images\\flag2.png')
+        self.imageflag = PhotoImage(file = RedFlag)
+
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
@@ -181,6 +187,7 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-3>', self.Red_Flag)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
     def demander_ouinon(self):
@@ -213,7 +220,13 @@ class InterfacePartie(Tk):
         Returns:
             None
         """
-        messagebox.showinfo(title= 'Info', message= 'This is how u play')
+        regle = """Les règles du jeu sont les suivantes :
+        1. Si le joueur choisit une case où une mine est cachée, la mine explose! La partie est terminée.
+        2. Si le joueur choisit une case avec un nombre caché, la case est dévoilée et le nombre devient visible.
+        3. Si le joueur choisit une case vide (donc qui n’a ni mine ni nombre caché), il y a un effet en cascade (voir section plus bas) qui fait le dévoilement de toutes les cases vides dans le voisinage jusqu’à ce que la limite du tableau soit atteinte ou qu’une case avec un numéro caché soit atteinte.
+        L’objectif du jeu est d’identifier, par la logique, toutes les cases contenant des mines, sans en déclencher aucune."""
+        messagebox.showinfo(title= 'Info', message= regle)
+        
 
     def maj_donnees(self, nb_rangees, nb_colonnes, nb_mines):
 
@@ -312,6 +325,8 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-3>', self.Red_Flag)
+
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
                 case.est_minee = donnees['tableau'][f"({i+1}, {j+1})"]['minee']
@@ -326,3 +341,33 @@ class InterfacePartie(Tk):
 
     def afficher_createurs(self):
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
+
+
+    def Red_Flag(self, event):
+        """
+        Fonction qui affiche le drapeau rouge quand on fait 
+        un clic droit avec la souris
+
+        Args:
+            event(Button-3) : Clic sur la souris droite de la case de notre choix
+
+        Return:
+            Aucun
+        """
+        boutonflag = event.widget
+        case = self.tableau_mines.obtenir_case(boutonflag.rangee_x, boutonflag.colonne_y)
+        if boutonflag.red_flag:
+            
+            boutonflag.reinitialiser_image()
+            boutonflag.red_flag = not boutonflag.red_flag
+        elif not boutonflag.red_flag and not case.est_devoilee and not self.defaite:
+            boutonflag.red_flag = not boutonflag.red_flag
+            boutonflag['image'] = self.imageflag
+            boutonflag['height'] = self.imageflag.height()
+            boutonflag['width'] = self.imageflag.width()
+        print(boutonflag.red_flag)
+
+
+    
+            
+        
