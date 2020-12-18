@@ -118,6 +118,9 @@ class InterfacePartie(Tk):
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
         self.devoiler_case()
+        if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
+            print('PU DE MINES!')
+            self.afficher_victoire()
 
     def devoiler_case(self):
         """
@@ -133,8 +136,6 @@ class InterfacePartie(Tk):
             self.ajouter_tour()
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['image'] = self.image_bombe
-                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['height'] = self.image_bombe.height()
-                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['width'] = self.image_bombe.width()
                 self.afficher_defaite()
 
             elif not case.est_minee:
@@ -145,19 +146,13 @@ class InterfacePartie(Tk):
                     for voisin in liste_voisin:
                         rangee, colonne = voisin
                         case_voisine = self.tableau_mines.obtenir_case(rangee,colonne)
-                        if case_voisine.nombre_mines_voisines == 0:
-                            case_voisine.devoiler()
-                            bouton_voisin = self.dictionnaire_boutons[(rangee, colonne)]
-                            bouton_voisin['image'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines]
-                            bouton_voisin['height'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines].height()
-                            bouton_voisin['width'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines].width()
-            if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
-                print('PU DE MINES!')
-                self.afficher_victoire()
-            
-    def recursive_cascade(self,liste_voisins):
-        for voisin in liste_voisins:
-            print('voisins')
+                        if not case_voisine.est_minee:
+                            self.case_appuyer_rangee = rangee
+                            self.case_appuyer_colonne = colonne
+                            self.devoiler_case()
+                            
+    
+        
 
     def afficher_defaite(self):
         msgbox = Toplevel()
@@ -184,8 +179,6 @@ class InterfacePartie(Tk):
                 bout['relief'] = 'raised'
                 if case.est_minee:
                     bout['image'] = self.image_bombe
-                    bout['height'] = self.image_bombe.height()
-                    bout['width'] = self.image_bombe.width()
                 else:
                     bout['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
 
