@@ -33,15 +33,16 @@ class InterfacePartie(Tk):
         self.temps = 0
         self.liste_images_nombres = []
         self.chemin = os.path.dirname(__file__)
+        chemin_red_flag = os.path.join(self.chemin, 'images/flag2.png')
+        self.image_drapeau = PhotoImage(file = chemin_red_flag)
+        chemin_bombe = os.path.join(self.chemin, 'images/bomb2.png')
+        self.image_bombe = PhotoImage(file = chemin_bombe)
         ## Importation des images que nous allons utiliser
         for i in range(8):
             chemin_img = os.path.join(self.chemin, f'images/tile_{str(i)}.png')
             image_actuelle = PhotoImage(file = chemin_img)
             self.liste_images_nombres.append(image_actuelle)
-        chemin_red_flag = os.path.join(self.chemin, 'images/flag2.png')
-        self.image_drapeau = PhotoImage(file = chemin_red_flag)
-        chemin_bombe = os.path.join(self.chemin, 'images/bomb2.png')
-        self.image_bombe = PhotoImage(file = chemin_bombe)
+            
 
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
@@ -93,6 +94,7 @@ class InterfacePartie(Tk):
         self.label_temps.destroy()
         self.label_temps = Label(self, text=f"Temps: {self.temps}")
         self.label_temps.grid(row=0,column=0)
+        self.label_temps.after(1000,lambda:[self.maj_choronometre(),self.afficher_chronometre()])
 
     def maj_choronometre(self):
         self.temps += 1
@@ -132,8 +134,9 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
+        if not self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne).est_devoilee:
+            self.ajouter_tour()
         self.devoiler_case()
-        self.ajouter_tour()
 
     def devoiler_case(self):
         """
@@ -238,7 +241,6 @@ class InterfacePartie(Tk):
         self.tour = 0
         self.temps = 0
         self.ajouter_tour()
-        self.afficher_chronometre()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
         self.defaite = False
@@ -253,6 +255,7 @@ class InterfacePartie(Tk):
                 bouton.bind('<Button-1>', self.trouver_case)
                 bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
+        self.afficher_chronometre()
 
     def demander_ouinon(self):
         """Auteur: David
@@ -367,8 +370,8 @@ class InterfacePartie(Tk):
             elif self.nombre_mines_partie > self.nombre_rangees_partie * \
                 self.nombre_colonnes_partie - 1:
                 raise NombreMinesInvalide
-            self.nouvelle_partie()
             self.fenetre.destroy()
+            self.nouvelle_partie()
         except ValueError:
             self.label_erreur_configuration.config(
                 text="Veuillez entrer\ndes entiers positifs!")
