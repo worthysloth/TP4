@@ -401,6 +401,7 @@ class InterfacePartie(Tk):
         donnees['tours'] = self.tour
         donnees['defaite'] = self.defaite
         donnees['tableau'] = {}
+        donnees['case_a_devoiler'] = self.tableau_mines.nombre_cases_sans_mine_a_devoiler
         #On défini les données dans le dictionnaire
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -470,6 +471,8 @@ class InterfacePartie(Tk):
                             [case.nombre_mines_voisines]
                 elif self.dictionnaire_boutons[(i+1, j+1)].drapeau:
                     bouton['image'] = self.image_drapeau
+        self.tableau_mines.nombre_cases_sans_mine_a_devoiler = donnees['case_a_devoiler']
+        print(self.tableau_mines.nombre_cases_sans_mine_a_devoiler)
 
     def afficher_createurs(self):
         """
