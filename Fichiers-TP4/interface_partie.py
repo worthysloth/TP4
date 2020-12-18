@@ -30,9 +30,9 @@ class InterfacePartie(Tk):
         self.defaite = False
         self.victoire = False
         self.tour = 0
+        self.temps = 0
         self.liste_images_nombres = []
         self.chemin = os.path.dirname(__file__)
-
         ## Importation des images que nous allons utiliser
         for i in range(8):
             chemin_img = os.path.join(self.chemin, f'images/tile_{str(i)}.png')
@@ -72,13 +72,10 @@ class InterfacePartie(Tk):
         ## On place la barre_menu
         self.configure(menu=barre_menu)
 
-        ######## Code pour le coutdown qui ne fonctionne pas encore parfaitement
-        self.label = Label(self, text="Timer", width=10)
-        self.label.grid()
-        self.remaining = 0
+        # On crée les labels qu'on va devoir utilise (initialisation vide)
+        self.label_temps = Label(self)
+        self.label_tour = Label(self)
         # self.countdown(5000)
-        self.labeltour = Label(self, text=f"TourPENIS#{self.tour}", width=10)
-        self.labeltour.grid()
 
         # A la fin on lance la partie une partie
         self.nouvelle_partie()
@@ -87,33 +84,42 @@ class InterfacePartie(Tk):
         """
         Fonction affiche et ajoute un tour au compteur
         """
-        self.labeltour.destroy()
-        self.labeltour = Label(self, text=f"Tour#{self.tour}", width=10)
-        self.labeltour.grid(row=0)
+        self.label_tour.destroy()
+        self.label_tour = Label(self, text=f"Tour#{self.tour}", width=10)
+        self.label_tour.grid(row=1,column=0)
         self.tour += 1
 
-    def countdown(self, remaining=None):
-        """
-        Fonction pour le mode "contre-la-montre" qui affiche la solution
-        si jamais l'utilisateur ne termine pas avant le temps impartie.
+    def afficher_chronometre(self):
+        self.label_temps.destroy()
+        self.label_temps = Label(self, text=f"Temps: {self.temps}")
+        self.label_temps.grid(row=0,column=0)
 
-        Args:
-            remaining ([type], optional): [description]. Defaults to None.
+    def maj_choronometre(self):
+        self.temps += 1
+    # def countdown(self, temps_restant):
+    #     """
+    #     Fonction pour le mode "contre-la-montre" qui affiche la solution
+    #     si jamais l'utilisateur ne termine pas avant le temps impartie.
 
-        A faire:
-        -S'assurer que la solution s'affiche dans tkinter et non CMD
-        -replacer le timer quelque part de nice
-        -Proposer au user de choisir ce mode
-        """
-        if remaining is not None:
-            self.remaining = remaining
+    #     Args:
+    #         remaining ([type], optional): [description]. Defaults to None.
 
-        if self.remaining <= 0:
-            self.label.configure(text="Temps écoulé")
-        else:
-            self.label.configure(text="%d" % self.remaining)
-            self.remaining = self.remaining - 1
-            self.after(1000, self.countdown)
+    #     A faire:
+    #     -S'assurer que la solution s'affiche dans tkinter et non CMD
+    #     -replacer le timer quelque part de nice
+    #     -Proposer au user de choisir ce mode
+    #     """
+    #     self.label = Label(self, text=f"Temps: {self.temps}", width=10)
+    #     self.label.grid()
+        # if remaining is not None:
+        #     self.remaining = remaining
+
+        # if self.remaining <= 0:
+        #     self.label.configure(text="Temps écoulé")
+        # else:
+        #     self.label.configure(text="%d" % self.remaining)
+        #     self.remaining = self.remaining - 1
+        #     self.after(1000, self.countdown)
 
     def trouver_case(self,event):
         """
@@ -226,11 +232,13 @@ class InterfacePartie(Tk):
         """
         Fonciton qui initialise une nouvelle partie.
         """
-        self.countdown(5000)
+        # self.countdown(5000)
         self.dictionnaire_boutons = {}
         self.cadre.destroy()
         self.tour = 0
+        self.temps = 0
         self.ajouter_tour()
+        self.afficher_chronometre()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
         self.defaite = False
