@@ -1,5 +1,9 @@
-Noms: 11
-Numéros de dossier (NI):
+Prénom et Nom : Aryanne Pomerleau
+Numéro de dossier (NI): 536774220
+Prénom et Nom : David Côté
+Numéro de dossier (NI): 111284839
+Prénom et Nom : Alexandre Caissy
+Numéro de dossier (NI): 536793605
 
 Correction
 ==========
@@ -26,9 +30,12 @@ Fonctionnalités facultatives
 IMPORTANT:
 Indiquez ici la liste des fonctionnalités (avec leur numéro et nom) que vous avez implémentées. 
 
-- # 00 : Nom de la fonctionnalité
-- # 00 : Nom de la fonctionnalité
-- # 00 : Nom de la fonctionnalité
+- # 00 : Dévoilement en cascade des cases vides 
+- # 01 : Placer un drapeau avec le clic droit de la souris 
+- # 03 : Amélioration des graphiques (images de mines, chiffres de couleur, etc)
+- # 04 : Afficher un chronomètre de temps de jeu
+- # 11 : Ajouts d’effets sonores 
+- # 00 :
 - etc.
 
 Commentaires:
