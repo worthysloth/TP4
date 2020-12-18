@@ -5,7 +5,7 @@ N'oubliez pas de commenter le code!
 """
 
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label,\
-    Menu, Toplevel, Message
+    Menu, Toplevel, Message, filedialog
 from tableau import Tableau
 from bouton_case import BoutonCase
 import os
@@ -417,16 +417,41 @@ class InterfacePartie(Tk):
                 "drapeau":self.dictionnaire_boutons[(i+1, j+1)].drapeau
                 }
 
+        # On crée une fenêtre pour demander le nom du fichier de sauvegarde
+        fenetre_sauvegarde = Toplevel()
+        fenetre_sauvegarde.geometry("%dx%d%+d%+d" % (300, 100, 0, 0))
+        nom_fichier = Label(fenetre_sauvegarde, text="Nom de la sauvegarde")
+        nom_fichier.pack()
+        entry_nom_fichier = Entry(fenetre_sauvegarde, width = 150)
+        entry_nom_fichier.pack()
+        sauvegarde_bouton = Button(fenetre_sauvegarde, text="Sauvegarder", 
+        command=lambda:[
+            self.creer_sauvegarde(entry_nom_fichier.get(),donnees),
+            fenetre_sauvegarde.destroy()
+            ])
+        sauvegarde_bouton.pack()
+
+
+    def creer_sauvegarde(self,nom,donnees):
+        """
+        Fonction qui ouvre le fichier de sauvegarde et met les données à 
+        l'intérieur
+
+        Args:
+            nom (str): Nom du fichier de sauvegarde
+            donnees (dict): Dictionnaire contenant les données à sauvegarder
+        """
         # On ouvre le fichier de sauvegarde et on écrit les données
-        with open("fichier_sauvegarde.txt", "w") as fichier_sauvegarde:
+        with open(f"{nom}.txt", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
+
 
     def charger_partie(self):
         """
         Fonction qui charge une partie à partir d'un fichier texte de
         sauvegarde. On valide aussi que le fichier existe.
         """
-        #########A COMPLETER AVEC SAUVGARDE_PARTIE#####################
+        
 
         # On détruit le cadre qu'on avait au début
         self.cadre.destroy()
@@ -483,7 +508,6 @@ class InterfacePartie(Tk):
         Fonction qui affiche un message d'information sur les créateurs du jeu.
         """
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
-
 
     def mettre_drapeau_rouge(self, event):
         """
