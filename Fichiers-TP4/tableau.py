@@ -193,154 +193,6 @@ class Tableau():
             for voisin in liste_voisins:
                 self.dictionnaire_cases[voisin].ajouter_une_mine_voisine()
 
-
-    def coordonnees_dans_limite(self, rangee_x, colonne_y):
-        """
-        Valide que les coordonées entrées sont à l'intérieur des limites du 
-        tableaux créé.
-        Args:
-            rangee_x (int) : Numéro de la rangée de la case dont on veut valider
-            la position
-            colonne_y (int): Numéro de la colonne de la case dont on veut 
-            valider la position
-        Returns:
-            bool : True si et seulement si les 2 coordonnées sont à l'intérieur
-            du tableau
-        """
-        
-        return 1 <= rangee_x <= self.dimension_rangee and 1 <= colonne_y <= \
-            self.dimension_colonne
-
-
-    def valider_coordonnees_a_devoiler(self, rangee_x, colonne_y):
-        """
-        Valide que les coordonnées reçues en argument sont celles d'une case que
-        l'on peut dévoiler 
-        (donc que les coordonnées sont valides et que la case correspondante n'a
-        pas encore été dévoilée).
-        
-        Args:
-            rangee_x (int) : Numéro de la rangée de la case dont on veut valider
-            les coordonnées
-            colonne_y (int): Numéro de la colonne de la case dont on veut
-            valider les coordonnées
-        
-        Returns
-            bool: True si la case à ces coordonnées (x, y) peut être dévoilée,
-            False autrement (donc si la case a déjà été dévoilée ou que les 
-            coordonnées ne dont pas valides).
-        """  
-        # On valide que les coordonnées recues sont dans le tableau et que la
-        # case n'a toujours pas été dévoilée
-        if self.valider_coordonnees(rangee_x, colonne_y) \
-        and not self.obtenir_case(rangee_x, colonne_y).est_devoilee:
-            return True
-        else:
-            return False
-        
-    def afficher_solution2(self):
-        """
-        Méthode qui affiche le tableau de la solution à l'écran. La solution
-        montre les mines pour les cases qui en contiennent et la valeur du
-        nombre de mines voisines pour les autres cases.
-        
-        Important: Vous n'avez pas à modifier cette méthode, mais vous pouvez 
-        vous en inspirer pour écrire la méthode afficher_tableau().
-        """
-        print() # Retour de ligne
-        
-        for rangee_x in range(0, self.dimension_rangee+1):
-            
-            # Affichage d'une ligne, caractère par caractère
-            for colonne_y in range(0, self.dimension_colonne+1):
-                if rangee_x == 0 and colonne_y == 0: 
-                    # Premiers caractères de l'en-tête (coin supérieur gauche)
-                    car = '  |' 
-                elif rangee_x == 0:
-                    # En-tête: numéro de la colonne 
-                    # (si y > 10, on affiche seulement l'unité pour éviter les 
-                    # décalages)
-                    car = f'{colonne_y%10}' 
-                elif colonne_y == 0:
-                    # Début de ligne: numéro de la ligne sur deux caractères,
-                    # suivi d'une ligne verticale.
-                    car = f'{rangee_x:<2}|' 
-                else:
-                    # Contenu d'une case
-                    case_xy = self.obtenir_case(rangee_x, colonne_y)  
-                    if case_xy.est_minee:
-                        car = 'M'
-                    else:
-                        car = str(case_xy.nombre_mines_voisines)
-                
-                # Afficher le caractère suivit d'un espace (sans retour de 
-                # ligne)
-                print(car, end=" ")
-            
-            # À la fin de chaque ligne
-            print() # Retour de ligne
-            if rangee_x == 0: # Ligne horizontale de l'en-tête
-                print('--+-' + '--'*self.dimension_colonne) 
-        
-    def afficher_tableau(self):
-        """
-        Méthode qui affiche le tableau à l'écran. Le tableau montre le contenu 
-        des cases dévoilées (mine ou nombre de mines voisines) ou un carré pour
-        les cases non dévoilées.
-        """
-        print() # Retour de ligne
-        
-        for rangee_x in range(0, self.dimension_rangee+1):
-            
-            # Affichage d'une ligne, caractère par caractère
-            for colonne_y in range(0, self.dimension_colonne+1):
-                if rangee_x == 0 and colonne_y == 0: 
-                    # Premiers caractères de l'en-tête (coin supérieur gauche)
-                    car = '  |' 
-                elif rangee_x == 0:
-                    # En-tête: numéro de la colonne 
-                    # (si y > 10, on affiche seulement l'unité pour éviter les 
-                    # décalages)
-                    car = f'{colonne_y%10}' 
-                elif colonne_y == 0:
-                    # Début de ligne: numéro de la ligne sur deux caractères,
-                    # suivi d'une ligne verticale.
-                    car = f'{rangee_x:<2}|' 
-                else:
-                    # Contenu d'une case
-                    case_xy = self.obtenir_case(rangee_x, colonne_y)
-
-                    # Si la case est devoilee  
-                    if case_xy.est_devoilee:
-                        if case_xy.est_minee:
-                            car = 'M'
-                        else:
-                            car = str(case_xy.nombre_mines_voisines)
-
-                    #Si la case n'est pas dévoilee         
-                    else:
-                        car = '◼'
-                                        
-                # Afficher le caractère suivit d'un espace (sans retour de 
-                # ligne)
-                print(car, end=" ")
-            
-            # À la fin de chaque ligne
-            print() # Retour de ligne
-            if rangee_x == 0: # Ligne horizontale de l'en-tête
-                print('--+-' + '--'*self.dimension_colonne) 
-
-
-    def contient_cases_a_devoiler(self):
-        """
-        Méthode qui indique si le tableau contient des cases à dévoiler.
-        
-        Returns:
-            bool: True s'il reste des cases à dévoiler, False autrement.
-        """
-
-        return self.nombre_cases_sans_mine_a_devoiler != 0
-
     def devoiler_case(self, rangee_x, colonne_y):
         """
         Méthode qui dévoile le contenu de la case dont les coordonnées sont
@@ -378,31 +230,9 @@ class Tableau():
             for x,y in voisins:
                 self.obtenir_case(x,y).est_devoilee = True
                 self.nombre_cases_sans_mine_a_devoiler -= 1
-            
-        
-    def contient_mine(self, rangee_x, colonne_y):
-        """
-        Méthode qui vérifie si la case dont les coordonnées sont reçues en 
-        argument contient une mine.
-        
-        Args:
-            rangee_x (int) : Numéro de la rangée de la case dont on veut 
-                            vérifier si elle contient une mine
-            colonne_y (int): Numéro de la colonne de la case dont on veut 
-                            vérifier si elle contient une mine
-        
-        Returns:
-            bool: True si la case à ces coordonnées (x, y) contient une mine, 
-            False autrement.
-        """
-        return self.obtenir_case(rangee_x, colonne_y).est_minee
-
-
 
 def test_initialisation():
     tableau_test = Tableau()
-
-    assert tableau_test.contient_cases_a_devoiler()
     assert tableau_test.nombre_cases_sans_mine_a_devoiler == \
         tableau_test.dimension_colonne * tableau_test.dimension_rangee - \
             tableau_test.nombre_mines
@@ -431,8 +261,6 @@ def test_valider_coordonnees_a_devoiler():
     tableau_test = Tableau(dimension_rangee=5, dimension_colonne=5, \
         nombre_mines=5)
     tableau_test.devoiler_case(3,3)
-    assert tableau_test.valider_coordonnees_a_devoiler(3,3) == False
-    assert tableau_test.valider_coordonnees_a_devoiler(10,10) == False
     
 def test_devoiler_case():
     tableau_test = Tableau()
@@ -445,16 +273,11 @@ def test_case_contient_mine():
         nombre_mines=0)
     case = tableau_test.obtenir_case(3,3)
     case.ajouter_mine()
-    assert tableau_test.contient_mine(3,3) == True
-    assert tableau_test.contient_mine(2,3) == False
-
 
 if __name__ == '__main__':
     tableau_test = Tableau()
     print('\nTABLEAU:')
-    tableau_test.afficher_tableau()
     print('\nSOLUTION:')   
-    tableau_test.afficher_solution2()
     print('Tests unitaires...')
     test_initialisation()
     test_valider_coordonnees()
