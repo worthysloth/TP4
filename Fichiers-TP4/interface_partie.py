@@ -132,6 +132,24 @@ class InterfacePartie(Tk):
             bouton['text'] = case.nombre_mines_voisines
             self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
             self.defaite = False
+            
+            # On crée la liste des voisins
+            voisins = tableau_mines.obtenir_voisins
+            
+            # On initialie une variable bool
+            devoiler = True
+            
+            # On parcours la liste voisins pour voir si la case est minée.
+            for x,y in voisins:
+                if case.est_minee == True:
+                    devoiler = False
+            
+            # Si la case n'a pas de mine, on met sa propriété est_devoilee à true
+            # et on décrémente le nombre de cases sans mine à dévoiler
+            if devoiler == True:
+                for x,y in voisins:
+                    case.est_devoilee = True
+                    case.nombre_cases_sans_mine_a_devoiler -= 1
 
         if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
             print("patate")
