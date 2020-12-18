@@ -449,7 +449,6 @@ class InterfacePartie(Tk):
             ])
         sauvegarde_bouton.pack()
 
-
     def creer_sauvegarde(self,nom,donnees):
         """
         Fonction qui ouvre le fichier de sauvegarde et met les données à 
@@ -460,7 +459,7 @@ class InterfacePartie(Tk):
             donnees (dict): Dictionnaire contenant les données à sauvegarder
         """
         # On ouvre le fichier de sauvegarde et on écrit les données
-        os.chdir(os.path.join(self.chemin,"saves"))
+        os.chdir(os.path.join(self.chemin,"sauvegardes"))
         with open(f"{nom}.json", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
 
@@ -471,9 +470,10 @@ class InterfacePartie(Tk):
         """
         try:
             fichier_sauvegarde = filedialog.askopenfile(mode='r', \
-                initialdir=os.path.join(self.chemin, "saves"))
+                initialdir=os.path.join(self.chemin, "sauvegardes"))
         except FileNotFoundError:
             self.charger_partie()
+
         # On détruit le cadre qu'on avait au début
         self.cadre.destroy()
         self.cadre = Frame(self)
