@@ -114,32 +114,50 @@ class InterfacePartie(Tk):
             self.remaining = self.remaining - 1
             self.after(1000, self.countdown)
 
-    def devoiler_case(self, event):
+    def trouver_case(self,event):
+        self.case_appuyer_rangee = event.widget.rangee_x
+        self.case_appuyer_colonne = event.widget.colonne_y
+        self.devoiler_case()
+
+    def devoiler_case(self):
         """
         NE FONCTIONNE PAS BIEN. LA SOLUTION S'AFFICHE DANS CMD ET NON TKINTER ET IL NE DÉTECTE PAS QUE LA GAME EST TERMINÉ
 
         Args:
             event ([type]): [description]
         """
-        bouton = event.widget
-        case = self.tableau_mines.obtenir_case(bouton.rangee_x, bouton.colonne_y)
+        # bouton = event.widget
+        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee, self.case_appuyer_colonne)
         if not case.est_devoilee and not self.defaite:
             case.devoiler()
             self.ajouter_tour()
             if case.est_minee:
-                bouton['image'] = self.image_bombe
-                bouton['height'] = self.image_bombe.height()
-                bouton['width'] = self.image_bombe.width()
+                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['image'] = self.image_bombe
+                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['height'] = self.image_bombe.height()
+                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['width'] = self.image_bombe.width()
                 self.afficher_defaite()
 
             elif not case.est_minee:
-                bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
+                self.dictionnaire_boutons[self.case_appuyer_rangee,self.case_appuyer_colonne]['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-
+                if case.nombre_mines_voisines == 0:
+                    liste_voisin = self.tableau_mines.obtenir_voisins(self.case_appuyer_rangee, self.case_appuyer_colonne)
+                    for voisin in liste_voisin:
+                        rangee, colonne = voisin
+                        case_voisine = self.tableau_mines.obtenir_case(rangee,colonne)
+                        if case_voisine.nombre_mines_voisines == 0:
+                            case_voisine.devoiler()
+                            bouton_voisin = self.dictionnaire_boutons[(rangee, colonne)]
+                            bouton_voisin['image'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines]
+                            bouton_voisin['height'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines].height()
+                            bouton_voisin['width'] = self.liste_images_nombres[case_voisine.nombre_mines_voisines].width()
             if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
                 print('PU DE MINES!')
                 self.afficher_victoire()
             
+    def recursive_cascade(self,liste_voisins):
+        for voisin in liste_voisins:
+            print('voisins')
 
     def afficher_defaite(self):
         msgbox = Toplevel()
@@ -188,7 +206,7 @@ class InterfacePartie(Tk):
             for j in range(self.tableau_mines.dimension_colonne):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
-                bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-1>', self.trouver_case)
                 bouton.bind('<Button-3>', self.Red_Flag)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
@@ -274,7 +292,7 @@ class InterfacePartie(Tk):
     def valider_configuration(self, nb_rangees, nb_colonnes, nb_mines, widget):
         try:
             self.maj_donnees(int(nb_rangees), int(nb_colonnes), int(nb_mines))
-            if not self.nombre_rangees_partie > 0 or not self.nombre_colonnes_partie > 0 or not self.nombre_mines_partie > 0:
+            if not self.nombre_rangees_partie > 0 or not self.nombre_colonnes_partie > 0 or not self.nombre_mines_partie >= 0:
                 raise ValueError
             elif self.nombre_mines_partie > self.nombre_rangees_partie * self.nombre_colonnes_partie - 1:
                 raise NombreMinesInvalide
