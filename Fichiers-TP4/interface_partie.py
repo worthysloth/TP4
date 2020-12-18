@@ -8,12 +8,11 @@ from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label, Men
 from tableau import Tableau
 from bouton_case import BoutonCase
 
-from winsound import *
 
 import os
 import json
 import time
-import winsound
+import simpleaudio as sa
 
 from random import randrange
 
@@ -46,6 +45,9 @@ class InterfacePartie(Tk):
         Path = os.path.dirname(__file__)
         RedFlag = os.path.join(Path, 'images/flag2.png')
         self.imageflag = PhotoImage(file = RedFlag)
+
+        ##Chemin pour son
+        self.sondevoile = os.path.join(Path, 'son/Gun.wav')
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
@@ -138,6 +140,11 @@ class InterfacePartie(Tk):
             elif not case.est_minee:
                 bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
+                
+                boutonson = self.sondevoile
+                wave_obj = sa.WaveObject.from_wave_file(boutonson)
+                play_obj = wave_obj.play()
+                #play_obj.wait_done()
 
             if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
                 print('PU DE MINES!')
@@ -192,18 +199,15 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
 
-                
                 bouton.bind('<Button-1>', self.devoiler_case)
-                play2 = winsound.PlaySound("sf_laser_15", winsound.SND_FILENAME)
-                #play2 = winsound.PlaySound("sf_laser_15.wav", winsound.SND_ASYNC)
-                #play2 = lambda: PlaySound('son/sf_laser_15.mp3', SND_FILENAME)
                 bouton.bind('<Button-3>', self.Red_Flag)
-                bouton.bind('<Button-2>', play2)
+                
 
 
                 
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
+    
 
 
     def demander_ouinon(self):
