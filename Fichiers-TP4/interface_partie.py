@@ -127,6 +127,7 @@ class InterfacePartie(Tk):
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
         self.devoiler_case()
+        self.ajouter_tour()
 
     def devoiler_case(self):
         """
@@ -142,7 +143,6 @@ class InterfacePartie(Tk):
         # on ajoute un tour au compteur
         if not case.est_devoilee and not self.defaite:
             case.devoiler()
-            self.ajouter_tour()
 
             # On vérifie si la case est minée. Si oui, on affiche une bombe et
             # on affiche un message de défaite
@@ -389,7 +389,8 @@ class InterfacePartie(Tk):
                 donnees['tableau'][f"({i+1}, {j+1})"] = {
                 "minee": case.est_minee,
                 "devoilee":case.est_devoilee,
-                "nombre_voisins":case.nombre_mines_voisines
+                "nombre_voisins":case.nombre_mines_voisines,
+                "drapeau":self.dictionnaire_boutons[(i+1, j+1)].drapeau
                 }
 
         # On ouvre le fichier de sauvegarde et on écrit les données
@@ -430,7 +431,10 @@ class InterfacePartie(Tk):
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
                 bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
+
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
+                self.dictionnaire_boutons[(i+1, j+1)].drapeau = \
+                    donnees['tableau'][f"({i+1}, {j+1})"]['drapeau']
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
                 case.est_minee = donnees['tableau'][f"({i+1}, {j+1})"]['minee']
                 case.est_devoilee = donnees['tableau'][f"({i+1}, {j+1})"]\
@@ -444,6 +448,8 @@ class InterfacePartie(Tk):
                     else:
                         bouton['image'] = self.liste_images_nombres\
                             [case.nombre_mines_voisines]
+                elif self.dictionnaire_boutons[(i+1, j+1)].drapeau:
+                    bouton['image'] = self.image_drapeau
 
     def afficher_createurs(self):
         """
