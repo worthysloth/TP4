@@ -1,28 +1,15 @@
-def Red_Flag(self, event):
-        """
-        Fonction qui affiche le drapeau rouge quand on fait 
-        un clic droit avec la souris
+import tkinter as tk
+from tkinter import messagebox as mb
 
-        Args:
-            event(Button-3) : Clic sur la souris droite de la case de notre choix
+def answer():
+    mb.showerror("Answer", "Sorry, no answer available")
 
-        Return:
-            Aucun
-        """
-        boutonflag = event.widget
-        case = self.tableau_mines.obtenir_case(boutonflag.rangee_x, boutonflag.colonne_y)
-        if boutonflag.red_flag:
-            
-            boutonflag.reinitialiser_image()
-            boutonflag.red_flag = not boutonflag.red_flag
-        elif not boutonflag.red_flag and not case.est_devoilee and not self.defaite:
-            boutonflag.red_flag = not boutonflag.red_flag
-            boutonflag['image'] = self.imageflag
-            boutonflag['height'] = self.imageflag.height()
-            boutonflag['width'] = self.imageflag.width()
-        print(boutonflag.red_flag)
- --------------------------------------------------------------------
+def callback():
+    if mb.askyesno('Verify', 'Really quit?'):
+        mb.showwarning('Yes', 'Not yet implemented')
+    else:
+        mb.showinfo('No', 'Quit has been cancelled')
 
-        Path = os.path.dirname(__file__)
-        RedFlag = os.path.join(Path, 'images/flag2.png')
-        self.imageflag = RedFlag
+tk.Button(text='Quit', command=callback).pack(fill=tk.X)
+tk.Button(text='Answer', command=answer).pack(fill=tk.X)
+tk.mainloop()
