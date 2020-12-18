@@ -48,6 +48,8 @@ class InterfacePartie(Tk):
 
         ##Chemin pour son
         self.sondevoile = os.path.join(Path, 'son/Gun.wav')
+        self.sonexplosion = os.path.join(Path, 'son/explosion2.wav')
+        self.musiqueconfig = os.path.join(Path, 'son/wiimusic.wav')
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
@@ -135,12 +137,18 @@ class InterfacePartie(Tk):
                 bouton['image'] = self.image_bombe
                 bouton['height'] = self.image_bombe.height()
                 bouton['width'] = self.image_bombe.width()
+                #Son explosiomn
+                boutondefaite = self.sonexplosion
+                wave_obj = sa.WaveObject.from_wave_file(boutondefaite)
+                wave_obj.play()
+
+
                 self.afficher_defaite()
 
             elif not case.est_minee:
                 bouton['image'] = self.liste_images_nombres[case.nombre_mines_voisines]
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
-                
+                #Son defaite
                 boutonson = self.sondevoile
                 wave_obj = sa.WaveObject.from_wave_file(boutonson)
                 wave_obj.play()
@@ -278,6 +286,10 @@ class InterfacePartie(Tk):
         label_mines.grid(row = 2, column = 0)
         entry_mine = Entry(fenetre_frame, width = 5)
         entry_mine.grid(row = 2, column = 1)
+
+        musiquewii = self.musiqueconfig
+        wave_obj = sa.WaveObject.from_wave_file(musiquewii)
+        wave_obj.play()
 
         self.label_erreur_configuration = Label(fenetre_frame, text='')
         self.label_erreur_configuration.grid(row=3,column=0,columnspan=2)
