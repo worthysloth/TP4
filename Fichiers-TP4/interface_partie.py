@@ -39,8 +39,10 @@ class InterfacePartie(Tk):
 
         ##Chemin pour la fonction Red_Flag
         Path = os.path.dirname(__file__)
-        RedFlag = os.path.join(Path, 'images\\flag2.png')
+        RedFlag = os.path.join(Path, 'images/flag2.png')
         self.imageflag = PhotoImage(file = RedFlag)
+
+        
 
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
