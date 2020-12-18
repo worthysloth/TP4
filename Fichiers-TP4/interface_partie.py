@@ -448,7 +448,7 @@ class InterfacePartie(Tk):
             for j in range(self.tableau_mines.dimension_colonne):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
-                bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-1>', self.trouver_case)
                 bouton.bind('<Button-3>', self.mettre_drapeau_rouge)
                 #On extrait les données
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
