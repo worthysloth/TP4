@@ -125,7 +125,8 @@ class InterfacePartie(Tk):
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
         #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
-        case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
+        case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,
+            self.case_appuyer_colonne)
         if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
             self.ajouter_tour()
             #Execution du son
@@ -139,7 +140,8 @@ class InterfacePartie(Tk):
         qui n'ont pas de mines.
         """
         # On obtiens la case sur laquelle on appuie
-        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
+        case = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,
+            self.case_appuyer_colonne)
 
         # On valide que la case n'est pas déjà dévoilée si elle ne l'ai pas,
         # on ajoute un tour au compteur
@@ -381,7 +383,8 @@ class InterfacePartie(Tk):
         except ValueError:
             self.label_erreur_configuration.config(
                 text="Veuillez entrer\ndes entiers positifs!")
-        #Si l'utilisateur entre un nombre de mines plus élevé que de case, on soulève NombreMinesInvalide
+        #Si l'utilisateur entre un nombre de mines plus élevé que de case, on 
+        # soulève NombreMinesInvalide
         except NombreMinesInvalide:
             self.label_erreur_configuration.config(
                 text="Veuillez entrer\nmoins de mines\nque de cases!")
@@ -401,7 +404,8 @@ class InterfacePartie(Tk):
         donnees['tours'] = self.tour
         donnees['defaite'] = self.defaite
         donnees['tableau'] = {}
-        donnees['case_a_devoiler'] = self.tableau_mines.nombre_cases_sans_mine_a_devoiler
+        donnees['case_a_devoiler'] = \
+            self.tableau_mines.nombre_cases_sans_mine_a_devoiler
         #On défini les données dans le dictionnaire
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
@@ -471,8 +475,8 @@ class InterfacePartie(Tk):
                             [case.nombre_mines_voisines]
                 elif self.dictionnaire_boutons[(i+1, j+1)].drapeau:
                     bouton['image'] = self.image_drapeau
-        self.tableau_mines.nombre_cases_sans_mine_a_devoiler = donnees['case_a_devoiler']
-        print(self.tableau_mines.nombre_cases_sans_mine_a_devoiler)
+        self.tableau_mines.nombre_cases_sans_mine_a_devoiler = \
+            donnees['case_a_devoiler']
 
     def afficher_createurs(self):
         """
