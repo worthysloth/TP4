@@ -1,9 +1,3 @@
-"""
-TODO: Ce fichier présente une ébauche d'interface pour le TP4.
-Vous pouvez le modifier à souhait.
-N'oubliez pas de commenter le code!
-"""
-
 from tkinter import Tk, Frame, Button, messagebox, Entry, PhotoImage, Label,\
     Menu, Toplevel, Message, filedialog
 from tableau import Tableau
@@ -41,8 +35,8 @@ class InterfacePartie(Tk):
             chemin (str): Chemin d'accès du fichier principal
             image_drapeau (PhotoImage) : Image contenant le drapeau
             image_bombe (PhotoImage) : Image contenant la bombe
-            sondevoile (str) : Son pour le devoilement des cases
-            sonexplosion (str) : Son pour le devoilement des mines
+            son_devoile (str) : Son pour le devoilement des cases
+            son_explosion (str) : Son pour le devoilement des mines
             
 
         """
@@ -68,8 +62,8 @@ class InterfacePartie(Tk):
         self.image_drapeau = PhotoImage(file = chemin_red_flag)
         chemin_bombe = os.path.join(self.chemin, 'images/bomb2.png')
         self.image_bombe = PhotoImage(file = chemin_bombe)
-        self.sondevoile = os.path.join(self.chemin, 'son/Gun.wav')
-        self.sonexplosion = os.path.join(self.chemin, 'son/explosion2.wav')
+        self.son_devoile = os.path.join(self.chemin, 'son/Gun.wav')
+        self.son_explosion = os.path.join(self.chemin, 'son/explosion2.wav')
         ## Importation des images que nous allons utiliser
         for i in range(8):
             chemin_img = os.path.join(self.chemin, f'images/tile_{str(i)}.png')
@@ -159,7 +153,7 @@ class InterfacePartie(Tk):
         if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
             self.ajouter_tour()
             #Execution du son
-            sa.WaveObject.from_wave_file(self.sondevoile).play()
+            sa.WaveObject.from_wave_file(self.son_devoile).play()
         self.devoiler_case()
 
     def devoiler_case(self):
@@ -182,7 +176,7 @@ class InterfacePartie(Tk):
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
-                sa.WaveObject.from_wave_file(self.sonexplosion).play()
+                sa.WaveObject.from_wave_file(self.son_explosion).play()
                 self.afficher_defaite()
 
             # Si la case n'est pas minée, on met l'image correspondante au
@@ -470,13 +464,16 @@ class InterfacePartie(Tk):
         with open(f"{nom}.json", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
 
-
     def charger_partie(self):
         """
         Fonction qui charge une partie à partir d'un fichier texte de
         sauvegarde. On valide aussi que le fichier existe.
         """
-        fichier_sauvegarde = filedialog.askopenfile(mode='r', initialdir=os.path.join(self.chemin, "saves"))
+        try:
+            fichier_sauvegarde = filedialog.askopenfile(mode='r', \
+                initialdir=os.path.join(self.chemin, "saves"))
+        except FileNotFoundError:
+            self.charger_partie()
         # On détruit le cadre qu'on avait au début
         self.cadre.destroy()
         self.cadre = Frame(self)
