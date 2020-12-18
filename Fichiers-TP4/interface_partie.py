@@ -141,6 +141,7 @@ class InterfacePartie(Tk):
             if case.est_minee:
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = self.image_bombe
+                sa.WaveObject.from_wave_file(self.sonexplosion).play()
                 self.afficher_defaite()
 
             # Si la case n'est pas minée, on met l'image correspondante au
@@ -149,6 +150,7 @@ class InterfacePartie(Tk):
                 self.dictionnaire_boutons[self.case_appuyer_rangee,\
                     self.case_appuyer_colonne]['image'] = \
                         self.liste_images_nombres[case.nombre_mines_voisines]
+                
                 self.tableau_mines.nombre_cases_sans_mine_a_devoiler -= 1
 
                 # Si on a découvert toutes les mines on gagne
