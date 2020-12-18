@@ -143,8 +143,8 @@ class InterfacePartie(Tk):
                 
                 boutonson = self.sondevoile
                 wave_obj = sa.WaveObject.from_wave_file(boutonson)
-                play_obj = wave_obj.play()
-                #play_obj.wait_done()
+                wave_obj.play()
+                
 
             if self.tableau_mines.nombre_cases_sans_mine_a_devoiler <= 0 and not self.defaite:
                 print('PU DE MINES!')
