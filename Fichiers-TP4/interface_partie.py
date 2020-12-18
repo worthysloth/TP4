@@ -466,7 +466,7 @@ class InterfacePartie(Tk):
             donnees (dict): Dictionnaire contenant les données à sauvegarder
         """
         # On ouvre le fichier de sauvegarde et on écrit les données
-        with open(f"{nom}.txt", "w") as fichier_sauvegarde:
+        with open(f"{nom}.json", "w") as fichier_sauvegarde:
             json.dump(donnees, fichier_sauvegarde)
 
 
@@ -475,16 +475,15 @@ class InterfacePartie(Tk):
         Fonction qui charge une partie à partir d'un fichier texte de
         sauvegarde. On valide aussi que le fichier existe.
         """
-        
-
+        fichier_sauvegarde = filedialog.askopenfile(mode='r')
         # On détruit le cadre qu'on avait au début
         self.cadre.destroy()
         self.cadre = Frame(self)
         self.cadre.grid(padx=10, pady=10)
 
         # On ouvre le fichier de sauvegarde pour y lire les données
-        with open("fichier_sauvegarde.txt", "r") as fichier_sauvegarde:
-            donnees = json.load(fichier_sauvegarde)
+        with open(f"{fichier_sauvegarde.name}", "r") as fichier:
+            donnees = json.load(fichier)
         
         # On charge les données aux bons attributs
         self.nombre_rangees_partie = donnees['rangees']
