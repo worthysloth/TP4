@@ -36,6 +36,12 @@ class InterfacePartie(Tk):
             image_actuelle = PhotoImage(file = chemin_img)
             self.liste_images_nombres.append(image_actuelle)
 
+
+        ##Chemin pour la fonction Red_Flag
+        Path = os.path.dirname(__file__)
+        RedFlag = os.path.join(Path, 'images\\flag2.png')
+        self.imageflag = PhotoImage(file = RedFlag)
+
         ## Bloc qui ajoute un menu ======================================================================
         ## On crée un item barre_menu qui représente un menu de sélection
         barre_menu = Menu(self)
@@ -181,7 +187,7 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
-                bouton.bind('<Button-3>', self.mouseClick)
+                bouton.bind('<Button-3>', self.Red_Flag)
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
 
     def demander_ouinon(self):
@@ -313,6 +319,8 @@ class InterfacePartie(Tk):
                 bouton = BoutonCase(self.cadre, i+1, j+1)
                 bouton.grid(row=i, column=j)
                 bouton.bind('<Button-1>', self.devoiler_case)
+                bouton.bind('<Button-3>', self.Red_Flag)
+
                 self.dictionnaire_boutons[(i+1, j+1)] = bouton
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
                 case.est_minee = donnees['tableau'][f"({i+1}, {j+1})"]['minee']
@@ -327,3 +335,23 @@ class InterfacePartie(Tk):
 
     def afficher_createurs(self):
         print("Aryanne Pommerleau, David Côté, Alex Caissy")
+
+
+    def Red_Flag(self, event):
+        """
+        Fonction qui affiche le drapeau rouge quand on fait 
+        un clic droit avec la souris
+
+        Args:
+            event(Button-3) : Clic sur la souris droite de la case de notre choix
+
+        Return:
+            Aucun
+        """
+        boutonflag = event.widget
+        case = self.tableau_mines.obtenir_case(boutonflag.rangee_x, boutonflag.colonne_y)
+        if not case.est_devoilee and not self.defaite:
+            
+            boutonflag['image'] = self.imageflag
+            boutonflag['height'] = self.imageflag.height()
+            boutonflag['width'] = self.imageflag.width()
