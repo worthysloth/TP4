@@ -107,6 +107,9 @@ class InterfacePartie(Tk):
             self.label_temps.after(1000,self.maj_chronometre)
         
     def maj_chronometre(self):
+        """
+        Fonction qui met à jour le chronometre
+        """
         self.temps += 1        
         self.afficher_chronometre()
 
@@ -121,6 +124,7 @@ class InterfacePartie(Tk):
         # On place les coordonnés en attributs et on dévoile la case
         self.case_appuyer_rangee = event.widget.rangee_x
         self.case_appuyer_colonne = event.widget.colonne_y
+        #Si la case n'est pas devoilee et minee on ajoute un tour et on devoile
         case_appuyer = self.tableau_mines.obtenir_case(self.case_appuyer_rangee,self.case_appuyer_colonne)
         if not case_appuyer.est_devoilee and not case_appuyer.est_minee:
             self.ajouter_tour()
@@ -397,6 +401,7 @@ class InterfacePartie(Tk):
         donnees['tours'] = self.tour
         donnees['defaite'] = self.defaite
         donnees['tableau'] = {}
+        #On défini les données dans le dictionnaire
         for i in range(self.tableau_mines.dimension_rangee):
             for j in range(self.tableau_mines.dimension_colonne):
                 case = self.tableau_mines.obtenir_case(i+1, j+1)
